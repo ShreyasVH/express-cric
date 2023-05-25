@@ -1,0 +1,55 @@
+const express = require('express')
+const bodyParser = require('body-parser')
+const cors = require('cors')
+const app = express()
+const routes = require('./routes')
+const { error: errorResponse } = require('./responses/response');
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+const fs = require('fs');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const allowedOrigins = ['https://http-client.react.com', 'https://http-client.vue.com', 'https://http-client.angular.com'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (origin && !allowedOrigins.includes(origin)) {
+      callback(new Error('Not allowed by CORS'));
+    } else {
+      callback(null, origin);
+    }
+  },
+  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Accept', 'Origin', 'X-Requested-With', 'Content-Type', 'Referer', 'User-Agent', 'Access-Control-Allow-Origin'],
+};
+app.use(cors(corsOptions));
+
+const swaggerJson = JSON.parse(fs.readFileSync('./swagger.json').toString());
+
+const options = {
+  definition: swaggerJson,
+  apis: ['./routes/*.js'], // Specify the path to your route files
+};
+
+const swaggerSpec = swaggerJsDoc(options);
+app.use('/swagger-ui', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+app.use('/', routes)
+
+app.use('/swagger.json', (req, res) => {
+  res.json(swaggerSpec);
+})
+
+app.use((err, req, res, next) => {
+  res
+    .status(err.httpStatusCode)
+    .json(errorResponse(err.description));
+})
+
+app.listen(process.env.PORT, () => console.log('Example app listening on port ' + process.env.PORT + '!'))
+
+module.exports = {
+  app
+}
