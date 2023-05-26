@@ -1,24 +1,36 @@
 const CreateRequest = require('../requests/countries/createRequest');
-const { asyncHandler } = require('./base.js');
+const { asyncHandler, ok, created } = require('./base.js');
 const CountryService = require('../services/countryService');
 const CountryResponse = require('../responses/countryResponse');
 const Response = require('../responses/response');
+const PaginatedResponse = require('../responses/paginatedResponse');
 
 const countryService = new CountryService();
 
 const create = asyncHandler(async (req, res, next) => {
   const createRequest = new CreateRequest(req.body);
   const country = await countryService.create(createRequest);
-  res.json(Response.success(new CountryResponse(country)));
+  created(res, new CountryResponse(country));
 });
 
 const searchByName = asyncHandler(async (req, res, next) => {
   const countries = await countryService.searchByName(req.params.name);
   const countryResponses = countries.map(country => new CountryResponse(country));
-  res.json(Response.success(countryResponses));
+  ok(res, countryResponses);
+});
+
+const getAll = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 25;
+  const countries = await countryService.getAll(page, limit);
+  const countryResponses = countries.map(country => new CountryResponse(country));
+  const totalCount = await countryService.getTotalCount();
+  console.log(totalCount);
+  ok(res, new PaginatedResponse(totalCount, countryResponses, page, limit));
 });
 
 module.exports = {
   create,
-  searchByName
+  searchByName,
+  getAll
 };

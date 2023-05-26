@@ -20,6 +20,14 @@ class CountryService {
   async searchByName (name) {
     return this.countryRepository.findByNamePattern(name);
   }
+
+  async getAll(page, limit) {
+    return this.countryRepository.findAll(page, limit);
+  }
+
+  async getTotalCount() {
+    return this.countryRepository.getTotalCount();
+  }
 }
 
 module.exports = CountryService;

@@ -23,6 +23,16 @@ class CountryRepository {
 
     return CountryModel.find({ name: regex });
   }
+
+  async findAll(page, limit) {
+    await connectDatabase();
+
+    return CountryModel.find().sort({ 'name': 1 }).skip((page - 1) * limit).limit(limit);
+  }
+
+  async getTotalCount() {
+    return CountryModel.countDocuments();
+  }
 }
 
 module.exports = CountryRepository;
