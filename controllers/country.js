@@ -24,8 +24,10 @@ const getAll = asyncHandler(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 25;
   const countries = await countryService.getAll(page, limit);
   const countryResponses = countries.map(country => new CountryResponse(country));
-  const totalCount = await countryService.getTotalCount();
-  console.log(totalCount);
+  let totalCount = 0;
+  if (page === 1) {
+    totalCount = await countryService.getTotalCount();
+  }
   ok(res, new PaginatedResponse(totalCount, countryResponses, page, limit));
 });
 
