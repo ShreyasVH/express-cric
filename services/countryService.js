@@ -32,6 +32,10 @@ class CountryService {
   async findById (id) {
     return this.countryRepository.findById(id);
   }
+
+  async findByIds (ids) {
+    return this.countryRepository.findByIds(ids);
+  }
 }
 
 module.exports = CountryService;

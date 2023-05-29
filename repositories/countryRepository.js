@@ -38,6 +38,11 @@ class CountryRepository {
     await connectDatabase();
     return CountryModel.findOne({ _id: id });
   }
+
+  async findByIds (ids) {
+    await connectDatabase();
+    return CountryModel.find({ _id: { $in: ids } });
+  }
 }
 
 module.exports = CountryRepository;

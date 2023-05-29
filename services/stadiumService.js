@@ -16,6 +16,14 @@ class StadiumService {
 
     return await this.stadiumRepository.create(createRequest);
   }
+
+  async getAll(page, limit) {
+    return this.stadiumRepository.findAll(page, limit);
+  }
+
+  async getTotalCount() {
+    return this.stadiumRepository.getTotalCount();
+  }
 }
 
 module.exports = StadiumService;

@@ -16,6 +16,16 @@ class StadiumRepository {
     await connectDatabase();
     return StadiumModel.findOne({ name, countryId });
   }
+
+  async findAll(page, limit) {
+    await connectDatabase();
+
+    return StadiumModel.find().sort({ 'name': 1 }).skip((page - 1) * limit).limit(limit);
+  }
+
+  async getTotalCount() {
+    return StadiumModel.countDocuments();
+  }
 }
 
 module.exports = StadiumRepository;
