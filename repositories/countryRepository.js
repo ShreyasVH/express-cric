@@ -33,6 +33,11 @@ class CountryRepository {
   async getTotalCount() {
     return CountryModel.countDocuments();
   }
+
+  async findById (id) {
+    await connectDatabase();
+    return CountryModel.findOne({ _id: id });
+  }
 }
 
 module.exports = CountryRepository;

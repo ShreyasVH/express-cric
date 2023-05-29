@@ -28,6 +28,10 @@ class CountryService {
   async getTotalCount() {
     return this.countryRepository.getTotalCount();
   }
+
+  async findById (id) {
+    return this.countryRepository.findById(id);
+  }
 }
 
 module.exports = CountryService;
