@@ -16,6 +16,16 @@ class TeamRepository {
     await connectDatabase();
     return TeamModel.findOne({ name, countryId, typeId });
   }
+
+  async findAll(page, limit) {
+    await connectDatabase();
+
+    return TeamModel.find().sort({ 'name': 1 }).skip((page - 1) * limit).limit(limit);
+  }
+
+  async getTotalCount() {
+    return TeamModel.countDocuments();
+  }
 }
 
 module.exports = TeamRepository;

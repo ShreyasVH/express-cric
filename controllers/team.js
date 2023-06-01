@@ -30,8 +30,34 @@ const create = asyncHandler(async (req, res, next) => {
   created(res, new TeamResponse(team, new CountryResponse(country), new TeamTypeResponse(teamType)));
 });
 
+const getAll = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 25;
+  const teams = await teamService.getAll(page, limit);
+  const countryIds = teams.map(team => team.countryId);
+  const countries = await countryService.findByIds(countryIds);
+  const countryMap = countries.reduce((object, current) => {
+    object[current._id] = current;
+    return object;
+  }, {});
+  const teamTypeIds = teams.map(team => team.typeId);
+  const teamTypes = await teamTypeService.findByIds(teamTypeIds);
+  const teamTypeMap = teamTypes.reduce((object, current) => {
+    object[current._id] = current;
+    return object;
+  }, {});
+
+  const teamResponses = teams.map(team => new TeamResponse(team, new CountryResponse(countryMap[team.countryId]), new TeamTypeResponse(teamTypeMap[team.typeId])));
+  let totalCount = 0;
+  if (page === 1) {
+    totalCount = await teamService.getTotalCount();
+  }
+  ok(res, new PaginatedResponse(totalCount, teamResponses, page, limit));
+});
+
 
 
 module.exports = {
-  create
+  create,
+  getAll
 };

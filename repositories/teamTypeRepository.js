@@ -6,6 +6,11 @@ class TeamTypeRepository {
     await connectDatabase();
     return TeamTypeModel.findOne({ _id: id });
   }
+
+  async findByIds (ids) {
+    await connectDatabase();
+    return TeamTypeModel.find({ _id: { $in: ids } });
+  }
 }
 
 module.exports = TeamTypeRepository;

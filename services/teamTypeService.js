@@ -8,6 +8,10 @@ class TeamTypeService {
   async findById (id) {
     return this.teamTypeRepository.findById(id);
   }
+
+  async findByIds (ids) {
+    return this.teamTypeRepository.findByIds(ids);
+  }
 }
 
 module.exports = TeamTypeService;

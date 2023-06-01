@@ -16,6 +16,14 @@ class TeamService {
 
     return await this.teamRepository.create(createRequest);
   }
+
+  async getAll(page, limit) {
+    return this.teamRepository.findAll(page, limit);
+  }
+
+  async getTotalCount() {
+    return this.teamRepository.getTotalCount();
+  }
 }
 
 module.exports = TeamService;
