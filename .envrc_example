@@ -6,3 +6,5 @@ export PORT=
 export MONGODB_IP=
 export MONGODB_PORT=
 export MONGODB_DB=
+
+export TZ=

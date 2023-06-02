@@ -48,7 +48,7 @@ app.use((err, req, res, next) => {
     .json(errorResponse(err.description));
 })
 
-app.listen(process.env.PORT, () => console.log('Example app listening on port ' + process.env.PORT + '!'))
+app.listen(process.env.PORT, () => console.log('app listening on port ' + process.env.PORT + '!'))
 
 module.exports = {
   app
