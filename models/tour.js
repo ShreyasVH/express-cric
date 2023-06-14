@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const { dateSchema } = require('./schemaExtensions');
+const { dateTimeSchema } = require('./schemaExtensions');
 
 const { CounterModel } = require('./counter');
 
 const tourSchema = new mongoose.Schema({
   _id: { type: Number },
   name: { type: String, required: true },
-  startTime: dateSchema
+  startTime: dateTimeSchema
 });
 
 tourSchema.pre('save', async function (next) {

@@ -1,6 +1,6 @@
 const moment = require('moment');
 
-const dateSchema = {
+const dateTimeSchema = {
   type: Date,
   required: true,
   get: function (value) {
@@ -11,6 +11,18 @@ const dateSchema = {
   }
 };
 
+const dateSchema = {
+  type: Date,
+  required: true,
+  get: function (value) {
+    return moment.utc(value).format('YYYY-MM-DD');
+  },
+  set: function (value) {
+    return moment.utc(value, 'YYYY-MM-DD').toDate();
+  }
+};
+
 module.exports = {
-  dateSchema
+  dateSchema,
+  dateTimeSchema
 };

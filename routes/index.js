@@ -4,6 +4,7 @@ const country = require('../controllers/country')
 const stadium = require('../controllers/stadium')
 const team = require('../controllers/team')
 const tour = require('../controllers/tour')
+const player = require('../controllers/player')
 
 const router = express.Router()
 
@@ -19,5 +20,7 @@ router.post('/cric/v1/teams', team.create)
 router.get('/cric/v1/teams', team.getAll)
 
 router.post('/cric/v1/tours', tour.create)
+
+router.post('/cric/v1/players', player.create)
 
 module.exports = router
