@@ -16,6 +16,14 @@ class PlayerService {
 
         return await this.playerRepository.create(createRequest);
     }
+
+    async getAll(page, limit) {
+        return this.playerRepository.findAll(page, limit);
+    }
+
+    async getTotalCount() {
+        return this.playerRepository.getTotalCount();
+    }
 }
 
 module.exports = PlayerService;

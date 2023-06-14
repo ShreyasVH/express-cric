@@ -22,5 +22,6 @@ router.get('/cric/v1/teams', team.getAll)
 router.post('/cric/v1/tours', tour.create)
 
 router.post('/cric/v1/players', player.create)
+router.get('/cric/v1/players', player.getAll)
 
 module.exports = router
