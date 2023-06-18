@@ -8,6 +8,10 @@ class GameTypeService {
     async findById (id) {
         return this.gameTypeRepository.findById(id);
     }
+
+    async findByIds (ids) {
+        return this.gameTypeRepository.findByIds(ids);
+    }
 }
 
 module.exports = GameTypeService;

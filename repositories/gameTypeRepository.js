@@ -6,6 +6,11 @@ class GameTypeRepository {
         await connectDatabase();
         return GameTypeModel.findOne({ _id: id });
     }
+
+    async findByIds (ids) {
+        await connectDatabase();
+        return GameTypeModel.find({ _id: { $in: ids } });
+    }
 }
 
 module.exports = GameTypeRepository;

@@ -8,6 +8,10 @@ class SeriesTeamsMapService {
     async create(seriesId, teamIds) {
         return this.seriesTeamsMapRepository.add(seriesId, teamIds);
     }
+
+    async getBySeriesIds (seriesIds) {
+        return this.seriesTeamsMapRepository.getBySeriesIds(seriesIds);
+    }
 }
 
 module.exports = SeriesTeamsMapService;

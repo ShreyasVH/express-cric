@@ -15,6 +15,7 @@ const TeamTypeResponse = require('../responses/teamTypeResponse');
 const TourResponse = require('../responses/tourResponse');
 const SeriesTypeResponse = require('../responses/seriesTypeResponse');
 const GameTypeResponse = require('../responses/gameTypeResponse');
+const PaginatedResponse = require('../responses/paginatedResponse');
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
 
@@ -93,6 +94,77 @@ const create = asyncHandler(async (req, res, next) => {
     created(res, new SeriesResponse(series, new CountryResponse(country), new TourResponse(tour), new SeriesTypeResponse(seriesType), new GameTypeResponse(gameType), teamResponses));
 });
 
+const getAll = asyncHandler(async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 25;
+    const seriesList = await seriesService.getAll(page, limit);
+    let totalCount = 0;
+    if (page === 1) {
+        totalCount = await seriesService.getTotalCount();
+    }
+
+    const countryIds = [];
+    const seriesTypeIds = [];
+    const gameTypeIds = [];
+    const tourIds = [];
+    const seriesIds = [];
+
+    for (const series of seriesList) {
+        countryIds.push(series.homeCountryId);
+        seriesTypeIds.push(series.typeId);
+        gameTypeIds.push(series.gameTypeId);
+        tourIds.push(series.tourId);
+        seriesIds.push(series.id);
+    }
+
+    const seriesTypes = await seriesTypeService.findByIds(seriesTypeIds);
+    const seriesTypeMap = seriesTypes.reduce((map, seriesType) => {
+        map[seriesType.id] = seriesType;
+        return map;
+    }, {});
+
+    const gameTypes = await gameTypeService.findByIds(gameTypeIds);
+    const gameTypeMap = gameTypes.reduce((map, gameType) => {
+        map[gameType.id] = gameType;
+        return map;
+    }, {});
+
+    const seriesTeamsMaps = await seriesTeamsMapService.getBySeriesIds(seriesIds);
+    const teamIds = seriesTeamsMaps.map(seriesTeamsMap => seriesTeamsMap.teamId);
+
+    const teams = await teamService.getByIds(teamIds);
+
+    const teamTypeIds = [];
+    for (const team of teams) {
+        countryIds.push(team.countryId);
+        teamTypeIds.push(team.typeId);
+    }
+
+    const countries = await countryService.findByIds(countryIds);
+    const countryMap = countries.reduce((map, country) => {
+        map[country.id] = country;
+        return map;
+    }, {});
+
+    const teamTypes = await teamTypeService.findByIds(teamTypeIds);
+    const teamTypeMap = teamTypes.reduce((map, teamType) => {
+        map[teamType.id] = teamType;
+        return map;
+    }, {});
+
+    const tours = await tourService.getByIds(tourIds);
+    const tourMap = tours.reduce((map, tour) => {
+        map[tour.id] = tour;
+        return map;
+    }, {});
+
+    const teamResponses = teams.map(team => new TeamResponse(team, new CountryResponse(countryMap[team.countryId]), new TeamTypeResponse(teamTypeMap[team.typeId])));
+
+    const seriesResponses = seriesList.map(series => new SeriesResponse(series, new CountryResponse(countryMap[series.homeCountryId]), new TourResponse(tourMap[series.tourId]), new SeriesTypeResponse(seriesTypeMap[series.typeId]), new GameTypeResponse(gameTypeMap[series.gameTypeId]), teamResponses));
+    ok(res, new PaginatedResponse(totalCount, seriesResponses, page, limit));
+});
+
 module.exports = {
-    create
+    create,
+    getAll
 };

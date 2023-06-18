@@ -16,6 +16,14 @@ class SeriesService {
 
         return await this.seriesRepository.create(createRequest);
     }
+
+    async getAll(page, limit) {
+        return this.seriesRepository.findAll(page, limit);
+    }
+
+    async getTotalCount() {
+        return this.seriesRepository.getTotalCount();
+    }
 }
 
 module.exports = SeriesService;

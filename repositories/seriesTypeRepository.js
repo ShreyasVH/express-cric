@@ -6,6 +6,11 @@ class SeriesTypeRepository {
         await connectDatabase();
         return SeriesTypeModel.findOne({ _id: id });
     }
+
+    async findByIds (ids) {
+        await connectDatabase();
+        return SeriesTypeModel.find({ _id: { $in: ids } });
+    }
 }
 
 module.exports = SeriesTypeRepository;

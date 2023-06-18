@@ -20,6 +20,10 @@ class TourService {
   async getById (id) {
     return await this.tourRepository.getById(id);
   }
+
+  async getByIds (ids) {
+    return await this.tourRepository.getByIds(ids);
+  }
 }
 
 module.exports = TourService;

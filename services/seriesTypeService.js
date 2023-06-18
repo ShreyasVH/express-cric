@@ -8,6 +8,10 @@ class SeriesTypeService {
     async findById (id) {
         return this.seriesTypeRepository.findById(id);
     }
+
+    async findByIds (ids) {
+        return this.seriesTypeRepository.findByIds(ids);
+    }
 }
 
 module.exports = SeriesTypeService;
