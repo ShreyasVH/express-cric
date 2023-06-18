@@ -26,6 +26,12 @@ class TeamRepository {
   async getTotalCount() {
     return TeamModel.countDocuments();
   }
+
+  async getByIds (ids) {
+    await connectDatabase();
+
+    return TeamModel.find({ _id: { $in: ids } });
+  }
 }
 
 module.exports = TeamRepository;

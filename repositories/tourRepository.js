@@ -16,6 +16,11 @@ class TourRepository {
     await connectDatabase();
     return TourModel.findOne({ name, startTime });
   }
+
+  async getById (id) {
+    await connectDatabase();
+    return TourModel.findOne({ _id: id });
+  }
 }
 
 module.exports = TourRepository;

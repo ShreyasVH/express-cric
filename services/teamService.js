@@ -24,6 +24,10 @@ class TeamService {
   async getTotalCount() {
     return this.teamRepository.getTotalCount();
   }
+
+  async getByIds (ids) {
+    return this.teamRepository.getByIds(ids);
+  }
 }
 
 module.exports = TeamService;
