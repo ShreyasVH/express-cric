@@ -6,13 +6,21 @@ class SeriesTeamsMapRepository {
         await connectDatabase();
 
         const seriesTeamsMaps = teamIds.map(teamId => new SeriesTeamsMap(seriesId, teamId));
-        return await SeriesTeamsMapModel.create(seriesTeamsMaps);
+        return SeriesTeamsMapModel.create(seriesTeamsMaps);
     }
 
     async getBySeriesIds (seriesIds) {
         await connectDatabase();
 
         return SeriesTeamsMapModel.find({ seriesId: { $in: seriesIds } });
+    }
+
+    async remove (seriesId, teamIds) {
+        await connectDatabase();
+
+        const seriesTeamsMaps = await SeriesTeamsMapModel.find({ seriesId: seriesId, teamId: { $in: teamIds } });
+        const ids = seriesTeamsMaps.map(stm => stm._id);
+        SeriesTeamsMapModel.deleteMany({ _id: { $in: ids } });
     }
 }
 

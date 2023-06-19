@@ -24,6 +24,10 @@ class PlayerService {
     async getTotalCount() {
         return this.playerRepository.getTotalCount();
     }
+
+    async getByIds (ids) {
+        return this.playerRepository.findByIds(ids);
+    }
 }
 
 module.exports = PlayerService;

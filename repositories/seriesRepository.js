@@ -1,4 +1,5 @@
 const connectDatabase = require('../config/database');
+const mongoose = require('mongoose');
 const { SeriesModel, Series } = require('../models/series');
 
 class SeriesRepository {
@@ -24,7 +25,18 @@ class SeriesRepository {
     }
 
     async getTotalCount() {
+        await connectDatabase();
         return SeriesModel.countDocuments();
+    }
+
+    async getById (id) {
+        await connectDatabase();
+        return SeriesModel.findOne({ _id: id });
+    }
+
+    async update (series) {
+        await connectDatabase();
+        SeriesModel.updateOne({ _id: series._id }, series);
     }
 }
 

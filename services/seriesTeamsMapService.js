@@ -12,6 +12,10 @@ class SeriesTeamsMapService {
     async getBySeriesIds (seriesIds) {
         return this.seriesTeamsMapRepository.getBySeriesIds(seriesIds);
     }
+
+    async remove (seriesId, teamIds) {
+        await this.seriesTeamsMapRepository.remove(seriesId, teamIds);
+    }
 }
 
 module.exports = SeriesTeamsMapService;

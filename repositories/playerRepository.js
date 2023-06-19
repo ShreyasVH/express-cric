@@ -26,6 +26,10 @@ class PlayerRepository {
     async getTotalCount() {
         return PlayerModel.countDocuments();
     }
+
+    async findByIds (ids) {
+        return PlayerModel.find({ _id: { $in: ids } });
+    }
 }
 
 module.exports = PlayerRepository;
