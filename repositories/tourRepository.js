@@ -26,6 +26,34 @@ class TourRepository {
     await connectDatabase();
     return TourModel.find({ _id: { $in: ids } });
   }
+
+  async findAllForYear(year, page, limit) {
+    await connectDatabase();
+
+    const startOfYear = new Date(Date.UTC(year, 0, 1, 0, 0, 0));
+    const endOfYear = new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+
+    return TourModel.find({
+      startTime: {
+        $gte: startOfYear,
+        $lte: endOfYear
+      }
+    }).sort({ 'startTime': 1 }).skip((page - 1) * limit).limit(limit);
+  }
+
+  async getTotalCountForYear(year) {
+    await connectDatabase();
+
+    const startOfYear = new Date(Date.UTC(year, 0, 1, 0, 0, 0));
+    const endOfYear = new Date(Date.UTC(year, 11, 31, 23, 59, 59));
+
+    return TourModel.countDocuments({
+      startTime: {
+        $gte: startOfYear,
+        $lte: endOfYear
+      }
+    });
+  }
 }
 
 module.exports = TourRepository;

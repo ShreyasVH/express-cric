@@ -13,6 +13,21 @@ const create = asyncHandler(async (req, res, next) => {
   created(res, new TourResponse(tour));
 });
 
+const getAllForYear = asyncHandler(async (req, res, next) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 25;
+  const year = req.params.year;
+  const tours = await tourService.getAllForYear(year, page, limit);
+
+  const tourResponses = tours.map(tour => new TourResponse(tour));
+  let totalCount = 0;
+  if (page === 1) {
+    totalCount = await tourService.getTotalCountForYear(year);
+  }
+  ok(res, new PaginatedResponse(totalCount, tourResponses, page, limit));
+});
+
 module.exports = {
-  create
+  create,
+  getAllForYear
 };

@@ -24,6 +24,14 @@ class TourService {
   async getByIds (ids) {
     return await this.tourRepository.getByIds(ids);
   }
+
+  async getAllForYear(year, page, limit) {
+    return this.tourRepository.findAllForYear(year, page, limit);
+  }
+
+  async getTotalCountForYear(year) {
+    return this.tourRepository.getTotalCountForYear(year);
+  }
 }
 
 module.exports = TourService;
