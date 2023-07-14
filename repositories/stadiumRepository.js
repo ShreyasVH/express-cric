@@ -26,6 +26,11 @@ class StadiumRepository {
   async getTotalCount() {
     return StadiumModel.countDocuments();
   }
+
+  async findById (id) {
+    await connectDatabase();
+    return StadiumModel.findOne({ _id: id });
+  }
 }
 
 module.exports = StadiumRepository;

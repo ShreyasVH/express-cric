@@ -1,7 +1,7 @@
 class PaginatedResponse {
   constructor(totalCount, data, page, limit) {
     this.totalCount = totalCount;
-    this.data = data;
+    this.items = data;
     this.page = page;
     this.limit = limit;
   }

@@ -24,6 +24,10 @@ class StadiumService {
   async getTotalCount() {
     return this.stadiumRepository.getTotalCount();
   }
+
+  async findById (id) {
+    return this.stadiumRepository.findById(id);
+  }
 }
 
 module.exports = StadiumService;

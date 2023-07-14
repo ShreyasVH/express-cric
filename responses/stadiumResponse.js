@@ -3,7 +3,7 @@ class StadiumResponse {
     this.id = stadium._id;
     this.name = stadium.name;
     this.city = stadium.city;
-    this.state = stadium.state;
+    this.state = stadium.state ?? null;
     this.country = country;
   }
 }

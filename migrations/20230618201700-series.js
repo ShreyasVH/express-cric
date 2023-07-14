@@ -49,10 +49,10 @@ module.exports = {
         await db.collection('series_teams_map').drop();
 
         await db.collection('counters').deleteOne({
-            _id: 'teams'
+            _id: 'series'
         });
 
-        await db.collection('teams').drop();
+        await db.collection('series').drop();
 
         await db.collection('counters').deleteOne({
             _id: 'seriesTypes'
