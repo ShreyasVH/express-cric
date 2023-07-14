@@ -2,13 +2,13 @@ const connectDatabase = require('../config/database');
 const { CaptainModel, Captain } = require('../models/captain');
 
 class CaptainRepository {
-    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session) {
+    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session) {
         await connectDatabase();
 
         const addedEntries = [];
 
         for (const playerId of playerIds) {
-            const captain = new Captain(matchId, playerId, teamMap[playerTeamMap[playerId]], gameTypeId, teamTypeMap);
+            const captain = new Captain(matchId, playerId, teamMap[playerTeamMap[playerId]], gameType, teamTypeMap);
             const captainModel = new CaptainModel(captain);
             addedEntries.push(await captainModel.save({ session }));
         }

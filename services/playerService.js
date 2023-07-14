@@ -28,6 +28,10 @@ class PlayerService {
     async getByIds (ids) {
         return this.playerRepository.findByIds(ids);
     }
+
+    async getById (id) {
+        return this.playerRepository.findById(id);
+    }
 }
 
 module.exports = PlayerService;

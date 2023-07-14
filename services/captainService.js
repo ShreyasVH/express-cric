@@ -5,8 +5,8 @@ class CaptainService {
         this.captainRepository = new CaptainRepository();
     }
 
-    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session) {
-        return this.captainRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session);
+    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session) {
+        return this.captainRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session);
     }
 }
 

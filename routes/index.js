@@ -26,6 +26,7 @@ router.get('/cric/v1/tours/year/:year', tour.getAllForYear)
 
 router.post('/cric/v1/players', player.create)
 router.get('/cric/v1/players', player.getAll)
+router.get('/cric/v1/players/:id', player.getById)
 
 router.post('/cric/v1/series', series.create)
 router.get('/cric/v1/series', series.getAll)

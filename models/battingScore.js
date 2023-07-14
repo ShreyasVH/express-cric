@@ -17,7 +17,7 @@ const battingScoreSchema = new mongoose.Schema({
     innings: { type: Number, required: true },
     number: { type: Number, required: false },
     isOfficialMatch: { type: Boolean, required: true},
-    gameTypeId: { type: Number, required: true },
+    gameType: { type: Object, required: true },
     teamType: { type: Object, require: true }
 }, { collection: 'battingScores' });
 
@@ -40,7 +40,7 @@ battingScoreSchema.pre('save', async function (next) {
 const BattingScoreModel = mongoose.model('BattingScore', battingScoreSchema);
 
 class BattingScore {
-    constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameTypeId, teamMap, teamTypeMap) {
+    constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap) {
         this.batsman = {
             playerId: createRequest.playerId,
             teamId: playerTeamMap[createRequest.playerId]
@@ -68,7 +68,7 @@ class BattingScore {
         this.innings = createRequest.innings;
         this.number = createRequest.number;
         this.isOfficialMatch = match.isOfficial;
-        this.gameTypeId = gameTypeId;
+        this.gameType = gameType;
         this.teamType = teamTypeMap[teamMap[playerTeamMap[createRequest.playerId]].typeId];
     }
 }

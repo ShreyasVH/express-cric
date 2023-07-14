@@ -18,7 +18,7 @@ const TeamTypeResponse = require('../responses/teamTypeResponse');
 const TourResponse = require('../responses/tourResponse');
 const SeriesTypeResponse = require('../responses/seriesTypeResponse');
 const GameTypeResponse = require('../responses/gameTypeResponse');
-const PlayerResponse = require('../responses/playerResponse');
+const PlayerMiniResponse = require('../responses/playerMiniResponse');
 const PaginatedResponse = require('../responses/paginatedResponse');
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
@@ -173,7 +173,7 @@ const getAll = asyncHandler(async (req, res, next) => {
 
     const teamResponses = teams.map(team => new TeamResponse(team, new CountryResponse(countryMap[team.countryId]), new TeamTypeResponse(teamTypeMap[team.typeId])));
 
-    const playerResponses = players.map(player => new PlayerResponse(player, new CountryResponse(countryMap[player.countryId])));
+    const playerResponses = players.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
 
     const seriesResponses = seriesList.map(series => new SeriesResponse(series, new CountryResponse(countryMap[series.homeCountryId]), new TourResponse(tourMap[series.tourId]), new SeriesTypeResponse(seriesTypeMap[series.typeId]), new GameTypeResponse(gameTypeMap[series.gameTypeId]), teamResponses, playerResponses));
     ok(res, new PaginatedResponse(totalCount, seriesResponses, page, limit));
@@ -326,7 +326,7 @@ const update = asyncHandler(async (req, res, next) => {
 
     const teamResponses = teams.map(team => new TeamResponse(team, new CountryResponse(country), new TeamTypeResponse(teamTypeMap[team.typeId])));
 
-    const playerResponses = players.map(player => new PlayerResponse(player, new CountryResponse(countryMap[player.countryId])));
+    const playerResponses = players.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
     created(res, new SeriesResponse(series, new CountryResponse(country), new TourResponse(tour), new SeriesTypeResponse(seriesType), new GameTypeResponse(gameType), teamResponses, playerResponses));
 });
 

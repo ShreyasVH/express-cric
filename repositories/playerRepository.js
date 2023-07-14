@@ -24,11 +24,18 @@ class PlayerRepository {
     }
 
     async getTotalCount() {
+        await connectDatabase();
         return PlayerModel.countDocuments();
     }
 
     async findByIds (ids) {
+        await connectDatabase();
         return PlayerModel.find({ _id: { $in: ids } });
+    }
+
+    async findById (id) {
+        await connectDatabase();
+        return PlayerModel.findOne({ _id: id });
     }
 }
 

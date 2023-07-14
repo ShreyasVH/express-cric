@@ -18,6 +18,7 @@ const ExtrasTypeService = require('../services/extrasTypeService');
 const ManOfTheMatchService = require('../services/manOfTheMatchService');
 const CaptainService = require('../services/captainService');
 const WicketKeeperService = require('../services/wicketKeeperService');
+const GameTypeService = require('../services/gameTypeService');
 
 const TeamResponse = require('../responses/teamResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -26,11 +27,12 @@ const TeamTypeResponse = require('../responses/teamTypeResponse');
 const MatchResponse = require('../responses/matchResponse');
 const WinMarginTypeResponse = require('../responses/winMarginTypeResponse');
 const StadiumResponse = require('../responses/stadiumResponse');
-const PlayerResponse = require('../responses/playerResponse');
+const PlayerMiniResponse = require('../responses/playerMiniResponse');
 const BattingScoreResponse = require('../responses/battingScoreResponse');
 const BowlingFigureResponse = require('../responses/bowlingFigureResponse');
 const ExtrasResponse = require('../responses/extrasResponse');
 const ExtrasTypeResponse = require('../responses/extrasTypeResponse');
+const GameTypeResponse = require('../responses/gameTypeResponse');
 
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
@@ -53,6 +55,7 @@ const extrasService = new ExtrasService();
 const manOfTheMatchService = new ManOfTheMatchService();
 const captainService = new CaptainService();
 const wicketKeeperService = new WicketKeeperService();
+const gameTypeService = new GameTypeService();
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -157,32 +160,36 @@ const create = asyncHandler(async (req, res, next) => {
             map[current.id] = current;
             return map;
         }, {});
-        const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, series.gameTypeId, teamMap, teamTypeMap, session);
+
+        const gameType = await gameTypeService.findById(series.gameTypeId);
+        const gameTypeResponse = new GameTypeResponse(gameType);
+
+        const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, gameTypeResponse, teamMap, teamTypeMap, session);
         battingScoreResponses = battingScores.map(battingScore => {
             let bowler = null;
             if (battingScore.bowler) {
                 const player = playerMap[battingScore.bowler.playerId];
-                bowler = new PlayerResponse(player, new CountryResponse(countryMap[player.countryId]));
+                bowler = new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId]));
             }
 
             let fielders = [];
             if (battingScore.fielders) {
                 fielders = battingScore.fielders.map(fielder => {
                     const player = playerMap[fielder.playerId];
-                    return new PlayerResponse(player, new CountryResponse(countryMap[player.countryId]));
+                    return new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId]));
                 });
             }
 
             const batsmanPlayer = playerMap[battingScore.batsman.playerId];
 
-            return new BattingScoreResponse(battingScore, new PlayerResponse(batsmanPlayer, new CountryResponse(countryMap[batsmanPlayer.countryId])), battingScore.dismissalMode, bowler, fielders);
+            return new BattingScoreResponse(battingScore, new PlayerMiniResponse(batsmanPlayer, new CountryResponse(countryMap[batsmanPlayer.countryId])), battingScore.dismissalMode, bowler, fielders);
         });
 
-        const bowlingFigures = await bowlingFigureService.add(createRequest.bowlingFigures, playerTeamMap, match, series.gameTypeId, teamMap, teamTypeMap, session);
+        const bowlingFigures = await bowlingFigureService.add(createRequest.bowlingFigures, playerTeamMap, match, gameTypeResponse, teamMap, teamTypeMap, session);
         bowlingFigureResponses = bowlingFigures.map(bowlingFigure => {
             const bowlerPlayer = playerMap[bowlingFigure.playerId];
 
-            return new BowlingFigureResponse(bowlingFigure, new PlayerResponse(bowlerPlayer, new CountryResponse(countryMap[bowlerPlayer.countryId])));
+            return new BowlingFigureResponse(bowlingFigure, new PlayerMiniResponse(bowlerPlayer, new CountryResponse(countryMap[bowlerPlayer.countryId])));
         });
 
         const extrasTypes = await extrasTypeService.getAll();
@@ -212,9 +219,9 @@ const create = asyncHandler(async (req, res, next) => {
             );
         });
 
-        await manOfTheMatchService.add(match.id, createRequest.manOfTheMatchList, playerTeamMap, teamMap, teamTypeMap, series.gameTypeId, session);
-        await captainService.add(match.id, createRequest.captains, playerTeamMap, teamMap, teamTypeMap, series.gameTypeId, session);
-        await wicketKeeperService.add(match.id, createRequest.captains, playerTeamMap, teamMap, teamTypeMap, series.gameTypeId, session)
+        await manOfTheMatchService.add(match.id, createRequest.manOfTheMatchList, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session);
+        await captainService.add(match.id, createRequest.captains, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session);
+        await wicketKeeperService.add(match.id, createRequest.wicketKeepers, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session)
 
         await session.commitTransaction();
         await session.endSession();
@@ -224,7 +231,7 @@ const create = asyncHandler(async (req, res, next) => {
         throw e;
     }
 
-    const playerResponses = allPlayers.map(player => new PlayerResponse(player, new CountryResponse(countryMap[player.countryId])));
+    const playerResponses = allPlayers.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
 
     const matchResponse = new MatchResponse(
         match,

@@ -13,7 +13,7 @@ const bowlingFigureSchema = new mongoose.Schema({
     wickets: { type: Number, required: true },
     innings: { type: Number, required: true },
     isOfficialMatch: { type: Boolean, required: true},
-    gameTypeId: { type: Number, required: true },
+    gameType: { type: Object, required: true },
     teamType: { type: Object, require: true }
 }, { collection: 'bowlingFigures' });
 
@@ -36,7 +36,7 @@ bowlingFigureSchema.pre('save', async function (next) {
 const BowlingFigureModel = mongoose.model('BowlingFigure', bowlingFigureSchema);
 
 class BowlingFigure {
-    constructor(createRequest, playerTeamMap, match, gameTypeId, teamMap, teamTypeMap) {
+    constructor(createRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap) {
         this.playerId = createRequest.playerId;
         this.teamId = playerTeamMap[createRequest.playerId];
         this.matchId = match.id;
@@ -46,7 +46,7 @@ class BowlingFigure {
         this.wickets = createRequest.wickets;
         this.innings = createRequest.innings;
         this.isOfficialMatch = match.isOfficial;
-        this.gameTypeId = gameTypeId;
+        this.gameType = gameType;
         this.teamType = teamTypeMap[teamMap[playerTeamMap[createRequest.playerId]].typeId];
     }
 }

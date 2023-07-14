@@ -5,8 +5,8 @@ class ManOfTheMatchService {
         this.manOfTheMatchRepository = new ManOfTheMatchRepository();
     }
 
-    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session) {
-        return this.manOfTheMatchRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session);
+    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session) {
+        return this.manOfTheMatchRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session);
     }
 }
 

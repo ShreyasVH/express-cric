@@ -5,8 +5,8 @@ class WicketKeeperService {
         this.wicketKeeperRepository = new WicketKeeperRepository();
     }
 
-    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session) {
-        return this.wicketKeeperRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameTypeId, session);
+    async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session) {
+        return this.wicketKeeperRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session);
     }
 }
 
