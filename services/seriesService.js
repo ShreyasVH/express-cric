@@ -6,7 +6,7 @@ class SeriesService {
         this.seriesRepository = new SeriesRepository();
     }
 
-    async create(createRequest) {
+    async create(createRequest, session) {
         createRequest.validate();
 
         const existingSeries = await this.seriesRepository.findByNameAndTourIdAndGameTypeId(createRequest.name, createRequest.tourId, createRequest.gameTypeId);
@@ -14,7 +14,7 @@ class SeriesService {
             throw new ConflictException('Series');
         }
 
-        return await this.seriesRepository.create(createRequest);
+        return await this.seriesRepository.create(createRequest, session);
     }
 
     async getAll(page, limit) {
@@ -29,7 +29,7 @@ class SeriesService {
         return this.seriesRepository.getById(id);
     }
 
-    async update (existingSeries, updateRequest) {
+    async update (existingSeries, updateRequest, session) {
         let isUpdateRequired = false;
 
         console.log(updateRequest);
@@ -65,7 +65,7 @@ class SeriesService {
         }
 
         if (isUpdateRequired) {
-            await this.seriesRepository.update(existingSeries);
+            await this.seriesRepository.update(existingSeries, session);
         }
 
         return existingSeries;

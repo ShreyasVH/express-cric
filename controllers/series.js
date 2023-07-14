@@ -80,12 +80,13 @@ const create = asyncHandler(async (req, res, next) => {
 
     let series;
     try {
-        series = await seriesService.create(createRequest);
-        await seriesTeamsMapService.create(series._id, createRequest.teams);
+        series = await seriesService.create(createRequest, session);
+        await seriesTeamsMapService.create(series._id, createRequest.teams, session);
 
         await session.commitTransaction();
         await session.endSession();
     } catch (e) {
+        await session.abortTransaction();
         await session.endSession();
         throw e;
     }
@@ -303,15 +304,16 @@ const update = asyncHandler(async (req, res, next) => {
 
     let series;
     try {
-        series = await seriesService.update(existingSeries, updateRequest);
-        await seriesTeamsMapService.create(series._id, teamsToAdd);
-        await seriesTeamsMapService.remove(series._id, teamsToDelete);
-        await manOfTheSeriesService.add(series._id, manOfTheSeriesToAdd);
-        await manOfTheSeriesService.remove(series._id, manOfTheSeriesToDelete);
+        series = await seriesService.update(existingSeries, updateRequest, session);
+        await seriesTeamsMapService.create(series._id, teamsToAdd, session);
+        await seriesTeamsMapService.remove(series._id, teamsToDelete, session);
+        await manOfTheSeriesService.add(series._id, manOfTheSeriesToAdd, session);
+        await manOfTheSeriesService.remove(series._id, manOfTheSeriesToDelete, session);
 
         await session.commitTransaction();
         await session.endSession();
     } catch (e) {
+        await session.abortTransaction();
         await session.endSession();
         throw e;
     }

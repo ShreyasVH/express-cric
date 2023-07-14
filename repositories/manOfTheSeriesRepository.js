@@ -2,13 +2,13 @@ const connectDatabase = require('../config/database');
 const { ManOfTheSeriesModel, ManOfTheSeries } = require('../models/manOfTheSeries');
 
 class ManOfTheSeriesRepository {
-    async add (seriesId, playerIds) {
+    async add (seriesId, playerIds, session) {
         await connectDatabase();
 
         const manOfTheSeriesList = playerIds.map(playerId => new ManOfTheSeries(seriesId, playerId));
 
         if (manOfTheSeriesList.length > 0) {
-            await ManOfTheSeriesModel.create(manOfTheSeriesList);
+            await ManOfTheSeriesModel.create(manOfTheSeriesList, { session });
         }
     }
 
@@ -18,13 +18,13 @@ class ManOfTheSeriesRepository {
         return ManOfTheSeriesModel.find({ seriesId: { $in: seriesIds } });
     }
 
-    async remove (seriesId, playerIds) {
+    async remove (seriesId, playerIds, session) {
         await connectDatabase();
 
         if (playerIds.length > 0) {
             const manOfTheSeriesList = await ManOfTheSeriesModel.find({ seriesId: seriesId, playerId: { $in: playerIds } });
             const ids = manOfTheSeriesList.map(mots => mots._id);
-            await ManOfTheSeriesModel.deleteMany({ _id: { $in: ids } });
+            await ManOfTheSeriesModel.deleteMany({ _id: { $in: ids } }, { session });
         }
     }
 }

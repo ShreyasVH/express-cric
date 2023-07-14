@@ -3,14 +3,14 @@ const mongoose = require('mongoose');
 const { SeriesModel, Series } = require('../models/series');
 
 class SeriesRepository {
-    async create (createRequest) {
+    async create (createRequest, session) {
         await connectDatabase();
 
         const series = new Series(createRequest)
 
         const seriesModel = new SeriesModel(series);
 
-        return await seriesModel.save();
+        return await seriesModel.save({ session });
     }
 
     async findByNameAndTourIdAndGameTypeId (name, tourId, gameTypeId) {
@@ -34,9 +34,9 @@ class SeriesRepository {
         return SeriesModel.findOne({ _id: id });
     }
 
-    async update (series) {
+    async update (series, session) {
         await connectDatabase();
-        SeriesModel.updateOne({ _id: series._id }, series);
+        SeriesModel.updateOne({ _id: series._id }, series, { session });
     }
 }
 
