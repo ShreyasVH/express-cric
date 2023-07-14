@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const { CounterModel } = require('./counter');
+const { dateTimeSchema } = require('./schemaExtensions');
 
 const bowlingFigureSchema = new mongoose.Schema({
     _id: { type: Number },
@@ -14,7 +15,10 @@ const bowlingFigureSchema = new mongoose.Schema({
     innings: { type: Number, required: true },
     isOfficialMatch: { type: Boolean, required: true},
     gameType: { type: Object, required: true },
-    teamType: { type: Object, require: true }
+    teamType: { type: Object, require: true },
+    matchStartTime: dateTimeSchema,
+    matchStadiumId: { type: Number, required: true },
+    opposingTeam: { type: Object, required: true }
 }, { collection: 'bowlingFigures' });
 
 bowlingFigureSchema.pre('save', async function (next) {
@@ -38,7 +42,9 @@ const BowlingFigureModel = mongoose.model('BowlingFigure', bowlingFigureSchema);
 class BowlingFigure {
     constructor(createRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap) {
         this.playerId = createRequest.playerId;
-        this.teamId = playerTeamMap[createRequest.playerId];
+        const bowlerTeamId = playerTeamMap[createRequest.playerId];
+        this.teamId = bowlerTeamId
+        const opposingTeamId = Object.keys(teamMap).filter(teamId => teamId !== bowlerTeamId)[0];
         this.matchId = match.id;
         this.balls = createRequest.balls;
         this.maidens = createRequest.maidens;
@@ -48,6 +54,13 @@ class BowlingFigure {
         this.isOfficialMatch = match.isOfficial;
         this.gameType = gameType;
         this.teamType = teamTypeMap[teamMap[playerTeamMap[createRequest.playerId]].typeId];
+        this.matchStartTime = match.startTime;
+        const opposingTeam = teamMap[opposingTeamId];
+        this.opposingTeam = {
+            id: opposingTeam._id,
+            teamType: opposingTeam.typeId
+        };
+        this.matchStadiumId = match.stadiumId;
     }
 }
 

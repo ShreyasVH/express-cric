@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const { CounterModel } = require('./counter');
+const { dateTimeSchema } = require('./schemaExtensions');
 const DismissalModeResponse = require('../responses/dismissalModeResponse');
 
 const battingScoreSchema = new mongoose.Schema({
@@ -18,7 +19,10 @@ const battingScoreSchema = new mongoose.Schema({
     number: { type: Number, required: false },
     isOfficialMatch: { type: Boolean, required: true},
     gameType: { type: Object, required: true },
-    teamType: { type: Object, require: true }
+    teamType: { type: Object, require: true },
+    matchStartTime: dateTimeSchema,
+    matchStadiumId: { type: Number, required: true },
+    opposingTeam: { type: Object, required: true }
 }, { collection: 'battingScores' });
 
 battingScoreSchema.pre('save', async function (next) {
@@ -41,9 +45,11 @@ const BattingScoreModel = mongoose.model('BattingScore', battingScoreSchema);
 
 class BattingScore {
     constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap) {
+        const batsmanTeamId = playerTeamMap[createRequest.playerId];
+        const opposingTeamId = Object.keys(teamMap).filter(teamId => teamId !== batsmanTeamId)[0];
         this.batsman = {
             playerId: createRequest.playerId,
-            teamId: playerTeamMap[createRequest.playerId]
+            teamId: batsmanTeamId
         };
         this.matchId = match.id;
         this.runs = createRequest.runs;
@@ -70,6 +76,13 @@ class BattingScore {
         this.isOfficialMatch = match.isOfficial;
         this.gameType = gameType;
         this.teamType = teamTypeMap[teamMap[playerTeamMap[createRequest.playerId]].typeId];
+        this.matchStartTime = match.startTime;
+        const opposingTeam = teamMap[opposingTeamId];
+        this.opposingTeam = {
+            id: opposingTeam._id,
+            teamType: opposingTeam.typeId
+        };
+        this.matchStadiumId = match.stadiumId;
     }
 }
 
