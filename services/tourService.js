@@ -32,6 +32,10 @@ class TourService {
   async getTotalCountForYear(year) {
     return this.tourRepository.getTotalCountForYear(year);
   }
+
+  async getAllYears () {
+    return this.tourRepository.getAllYears();
+  }
 }
 
 module.exports = TourService;

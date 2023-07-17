@@ -27,7 +27,14 @@ const getAllForYear = asyncHandler(async (req, res, next) => {
   ok(res, new PaginatedResponse(totalCount, tourResponses, page, limit));
 });
 
+const getAllYears = asyncHandler(async (req, res, next) => {
+  const years = await tourService.getAllYears();
+
+  ok(res, years);
+});
+
 module.exports = {
   create,
-  getAllForYear
+  getAllForYear,
+  getAllYears
 };

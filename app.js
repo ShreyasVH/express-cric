@@ -11,7 +11,7 @@ const fs = require('fs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const allowedOrigins = ['https://http-client.react.com', 'https://http-client.vue.com', 'https://http-client.angular.com'];
+const allowedOrigins = ['https://http-client.react.com', 'https://http-client.vue.com', 'https://http-client.angular.com', 'https://cric.react.com'];
 
 const corsOptions = {
   origin: function (origin, callback) {

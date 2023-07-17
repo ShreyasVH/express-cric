@@ -38,7 +38,7 @@ class TourRepository {
         $gte: startOfYear,
         $lte: endOfYear
       }
-    }).sort({ 'startTime': 1 }).skip((page - 1) * limit).limit(limit);
+    }).sort({ 'startTime': -1 }).skip((page - 1) * limit).limit(limit);
   }
 
   async getTotalCountForYear(year) {
@@ -53,6 +53,24 @@ class TourRepository {
         $lte: endOfYear
       }
     });
+  }
+
+  async getAllYears () {
+    await connectDatabase();
+
+    const years = [];
+
+    const result = await TourModel.aggregate([
+      { $group: { _id: { $year: '$startTime' } } },
+      { $project: { year: '$_id', _id: 0 } },
+      { $sort: { year: -1 } }
+    ]);
+
+    for (const row of result) {
+      years.push(row.year);
+    }
+
+    return years;
   }
 }
 
