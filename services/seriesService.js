@@ -32,8 +32,6 @@ class SeriesService {
     async update (existingSeries, updateRequest, session) {
         let isUpdateRequired = false;
 
-        console.log(updateRequest);
-
         if (!!updateRequest.name && updateRequest.name !== existingSeries.name) {
             isUpdateRequired = true;
             existingSeries.name = updateRequest.name;

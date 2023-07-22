@@ -8,7 +8,7 @@ const manOfTheMatchSchema = new mongoose.Schema({
     matchId: { type: Number, required: true },
     playerId: { type: Number, required: true },
     teamId: { type: Number, required: true },
-    gameType: { type: Number, required: true },
+    gameType: { type: Object, required: true },
     teamType: { type: Object, required: true }
 },  { collection: 'manOfTheMatch' });
 
