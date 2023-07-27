@@ -7,6 +7,7 @@ const { error: errorResponse } = require('./responses/response');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
+const MyException = require('./exceptions/myException');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,9 +44,17 @@ app.use('/swagger.json', (req, res) => {
 })
 
 app.use((err, req, res, next) => {
+  let status = 500;
+  let message = err.message;
+
+  if (err instanceof MyException) {
+    status = err.httpStatusCode;
+    message = err.description;
+  }
+
   res
-    .status(err.httpStatusCode)
-    .json(errorResponse(err.description));
+    .status(status)
+    .json(errorResponse(message));
 })
 
 app.listen(process.env.PORT, () => console.log('app listening on port ' + process.env.PORT + '!'))

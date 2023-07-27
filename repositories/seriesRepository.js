@@ -38,6 +38,11 @@ class SeriesRepository {
         await connectDatabase();
         SeriesModel.updateOne({ _id: series._id }, series, { session });
     }
+
+    async getByTourId (tourId) {
+        await connectDatabase();
+        return SeriesModel.find({ tourId: tourId }).sort({ 'startTime': -1 });
+    }
 }
 
 module.exports = SeriesRepository;

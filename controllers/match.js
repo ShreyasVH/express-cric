@@ -236,6 +236,7 @@ const create = asyncHandler(async (req, res, next) => {
     const matchResponse = new MatchResponse(
         match,
         series,
+        gameType,
         new TeamResponse(team1, new CountryResponse(countryMap[team1.countryId]), new TeamTypeResponse(teamTypeMap[team1.typeId])),
         new TeamResponse(team2, new CountryResponse(countryMap[team2.countryId]), new TeamTypeResponse(teamTypeMap[team2.typeId])),
         new ResultTypeResponse(resultType),

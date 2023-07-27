@@ -1,9 +1,9 @@
 const SeriesMiniResponse = require('./seriesMiniResponse');
 
 class MatchResponse {
-    constructor(match, series, team1, team2, resultType, winMarginType, stadium, players, battingScores, bowlingFigures, extras, manOfTheMatchPlayerIds, captainPlayerIds, wicketKeeperIds) {
+    constructor(match, series, gameType, team1, team2, resultType, winMarginType, stadium, players, battingScores, bowlingFigures, extras, manOfTheMatchPlayerIds, captainPlayerIds, wicketKeeperIds) {
         this.id = match._id;
-        this.series = new SeriesMiniResponse(series);
+        this.series = new SeriesMiniResponse(series, gameType);
         this.team1 = team1;
         this.team2 = team2;
         const teamMap = {

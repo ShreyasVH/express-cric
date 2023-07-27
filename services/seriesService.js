@@ -68,6 +68,10 @@ class SeriesService {
 
         return existingSeries;
     }
+
+    async getByTourId (tourId) {
+        return this.seriesRepository.getByTourId(tourId);
+    }
 }
 
 module.exports = SeriesService;
