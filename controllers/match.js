@@ -141,6 +141,9 @@ const create = asyncHandler(async (req, res, next) => {
         return map;
     }, {});
 
+    const gameType = await gameTypeService.findById(series.gameTypeId);
+    const gameTypeResponse = new GameTypeResponse(gameType);
+
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -160,9 +163,6 @@ const create = asyncHandler(async (req, res, next) => {
             map[current.id] = current;
             return map;
         }, {});
-
-        const gameType = await gameTypeService.findById(series.gameTypeId);
-        const gameTypeResponse = new GameTypeResponse(gameType);
 
         const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, gameTypeResponse, teamMap, teamTypeMap, session);
         battingScoreResponses = battingScores.map(battingScore => {
