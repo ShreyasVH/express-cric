@@ -33,6 +33,7 @@ router.get('/cric/v1/players/:id', player.getById)
 router.post('/cric/v1/series', series.create)
 router.get('/cric/v1/series', series.getAll)
 router.put('/cric/v1/series/:id', series.update)
+router.get('/cric/v1/series/:id', series.getById)
 
 router.post('/cric/v1/matches', match.create)
 

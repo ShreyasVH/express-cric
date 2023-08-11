@@ -6,6 +6,11 @@ class WinMarginTypeRepository {
         await connectDatabase();
         return WinMarginTypeModel.findOne({ _id: id });
     }
+
+    async findByIds (ids) {
+        await connectDatabase();
+        return WinMarginTypeModel.find({ _id: { $in: ids } });
+    }
 }
 
 module.exports = WinMarginTypeRepository;

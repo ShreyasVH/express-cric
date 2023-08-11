@@ -6,6 +6,11 @@ class ResultTypeRepository {
         await connectDatabase();
         return ResultTypeModel.findOne({ _id: id });
     }
+
+    async findByIds (ids) {
+        await connectDatabase();
+        return ResultTypeModel.find({ _id: { $in: ids } });
+    }
 }
 
 module.exports = ResultTypeRepository;

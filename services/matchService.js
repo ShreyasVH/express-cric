@@ -16,6 +16,10 @@ class MatchService {
 
         return await this.matchRepository.create(createRequest, session);
     }
+
+    async findBySeriesId (seriesId) {
+        return this.matchRepository.findBySeriesId(seriesId);
+    }
 }
 
 module.exports = MatchService;

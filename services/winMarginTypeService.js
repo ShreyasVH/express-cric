@@ -8,6 +8,10 @@ class WinMarginTypeService {
     async findById (id) {
         return this.winMarginTypeRepository.findById(id);
     }
+
+    async findByIds (ids) {
+        return this.winMarginTypeRepository.findByIds(ids);
+    }
 }
 
 module.exports = WinMarginTypeService;

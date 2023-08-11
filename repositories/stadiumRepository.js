@@ -31,6 +31,11 @@ class StadiumRepository {
     await connectDatabase();
     return StadiumModel.findOne({ _id: id });
   }
+
+  async findByIds (ids) {
+    await connectDatabase();
+    return StadiumModel.find({ _id: { $in: ids } });
+  }
 }
 
 module.exports = StadiumRepository;

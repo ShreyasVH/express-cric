@@ -16,6 +16,11 @@ class MatchRepository {
         await connectDatabase();
         return MatchModel.findOne({ stadiumId, startTime });
     }
+
+    async findBySeriesId (seriesId) {
+        await connectDatabase();
+        return MatchModel.find({ seriesId: seriesId }).sort({ startTime: 1 });
+    }
 }
 
 module.exports = MatchRepository;

@@ -11,6 +11,10 @@ const TourService = require('../services/tourService');
 const SeriesTeamsMapService = require('../services/seriesTeamsMapService');
 const ManOfTheSeriesService = require('../services/manOfTheSeriesService');
 const PlayerService = require('../services/playerService');
+const MatchService = require('../services/matchService');
+const ResultTypeService = require('../services/resultTypeService');
+const WinMarginTypeService = require('../services/winMarginTypeService');
+const StadiumService = require('../services/stadiumService');
 const TeamResponse = require('../responses/teamResponse');
 const SeriesResponse = require('../responses/seriesResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -19,6 +23,9 @@ const TourMiniResponse = require('../responses/tourMiniResponse');
 const SeriesTypeResponse = require('../responses/seriesTypeResponse');
 const GameTypeResponse = require('../responses/gameTypeResponse');
 const PlayerMiniResponse = require('../responses/playerMiniResponse');
+const SeriesDetailedResponse = require('../responses/seriesDetailedResponse');
+const StadiumResponse = require('../responses/stadiumResponse');
+const MatchMiniResponse = require('../responses/matchMiniResponse');
 const PaginatedResponse = require('../responses/paginatedResponse');
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
@@ -33,6 +40,10 @@ const seriesTeamsMapService = new SeriesTeamsMapService();
 const tourService = new TourService();
 const manOfTheSeriesService = new ManOfTheSeriesService();
 const playerService = new PlayerService();
+const matchService = new MatchService();
+const resultTypeService = new ResultTypeService();
+const winMarginTypeService = new WinMarginTypeService();
+const stadiumService = new StadiumService();
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -330,8 +341,98 @@ const update = asyncHandler(async (req, res, next) => {
     ok(res, new SeriesResponse(series, new CountryResponse(country), new TourMiniResponse(tour), new SeriesTypeResponse(seriesType), new GameTypeResponse(gameType), teamResponses, playerResponses));
 });
 
+const getById = asyncHandler(async (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    const series = await seriesService.getById(id);
+    if (null === series) {
+        throw new NotFoundException('Series');
+    }
+
+    const seriesType = await seriesTypeService.findById(series.typeId);
+    const gameType = await gameTypeService.findById(series.gameTypeId);
+
+    const seriesTeamsMaps = await seriesTeamsMapService.getBySeriesIds([id]);
+    const teamIds = seriesTeamsMaps.map(stm => stm.teamId);
+    const teams = await teamService.getByIds(teamIds);
+    const teamTypeIds = [];
+    const countryIds = [];
+
+    for (const team of teams) {
+        teamTypeIds.push(team.typeId);
+        countryIds.push(team.countryId);
+    }
+
+    const teamTypes = await teamTypeService.findByIds(teamTypeIds);
+    const teamTypeMap = teamTypes.reduce((map, current) => {
+        map[current.id] = current;
+        return map;
+    }, {});
+
+    const matches = await matchService.findBySeriesId(id);
+
+    const stadiumIds = [];
+    const resultTypeIds = [];
+    const winMarginTypeIds = [];
+
+    for (const match of matches) {
+        stadiumIds.push(match.stadiumId);
+        resultTypeIds.push(match.resultTypeId);
+        if (null !== match.winMarginTypeId) {
+            winMarginTypeIds.push(match.winMarginTypeId);
+        }
+    }
+
+    const stadiums = await stadiumService.findByIds(stadiumIds);
+    const stadiumMap = {};
+    for (const stadium of stadiums) {
+        stadiumMap[stadium.id] = stadium;
+        countryIds.push(stadium.countryId);
+    }
+
+    const countries = await countryService.findByIds(countryIds);
+    const countryMap = countries.reduce((map, current) => {
+        map[current.id] = current;
+        return map;
+    }, {});
+
+    const teamResponses = teams.map(team => new TeamResponse(team, new CountryResponse(countryMap[team.countryId]), new TeamTypeResponse(teamTypeMap[team.typeId])));
+    const teamResponseMap = teamResponses.reduce((map, current) => {
+        map[current.id] = current;
+        return map;
+    }, {});
+
+    const resultTypes = await resultTypeService.findByIds(resultTypeIds);
+    const resultTypeMap = resultTypes.reduce((map, current) => {
+        map[current.id] = current;
+        return map;
+    }, {});
+    const winMarginTypes = await winMarginTypeService.findByIds(winMarginTypeIds);
+    const winMarginTypeMap = winMarginTypes.reduce((map, current) => {
+        map[current.id] = current;
+        return map;
+    }, {});
+
+    const matchMiniResponses = matches.map(match => {
+        const stadium = stadiumMap[match.stadiumId];
+        return new MatchMiniResponse(
+            match,
+            teamResponseMap[match.team1Id],
+            teamResponseMap[match.team2Id],
+            resultTypeMap[match.resultTypeId],
+            match.winMarginTypeId ? winMarginTypeMap[match.winMarginTypeId] : null,
+            new StadiumResponse(stadium, new CountryResponse(countryMap[stadium.countryId]))
+        );
+    });
+
+    const seriesResponse = new SeriesDetailedResponse(series, seriesType, gameType, teamResponses, matchMiniResponses);
+
+    ok(res, seriesResponse);
+});
+
 module.exports = {
     create,
     getAll,
-    update
+    update,
+    getById
 };

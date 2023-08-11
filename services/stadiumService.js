@@ -28,6 +28,10 @@ class StadiumService {
   async findById (id) {
     return this.stadiumRepository.findById(id);
   }
+
+  async findByIds (ids) {
+    return this.stadiumRepository.findByIds(ids);
+  }
 }
 
 module.exports = StadiumService;
