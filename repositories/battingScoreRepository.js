@@ -21,7 +21,7 @@ class BattingScoreRepository {
         const stats = {};
 
         const result = await BattingScoreModel.aggregate([
-            { $match: { 'batsman.playerId': playerId } },
+            { $match: { 'batsman.playerId': playerId, 'isOfficialMatch': true, 'teamType.name': 'International', "dismissalMode.name": { $not: { $eq: "Retired Hurt" } } } },
             {
                 $group: {
                     _id: {
@@ -62,7 +62,7 @@ class BattingScoreRepository {
         const statsFinal = {};
 
         const result = await BattingScoreModel.aggregate([
-            { $match: { 'batsman.playerId': playerId } },
+            { $match: { 'batsman.playerId': playerId, 'isOfficialMatch': true, 'teamType.name': 'International' } },
             {
                 $group: {
                     _id: '$gameType.name',
@@ -112,7 +112,7 @@ class BattingScoreRepository {
         const statsFinal = {};
 
         const result = await BattingScoreModel.aggregate([
-            { $match: { 'fielders.playerId': playerId } },
+            { $match: { 'fielders.playerId': playerId, 'isOfficialMatch': true, 'teamType.name': 'International' } },
             {
                 $group: {
                     _id: {

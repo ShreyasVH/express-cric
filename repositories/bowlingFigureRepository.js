@@ -21,7 +21,7 @@ class BowlingFigureRepository {
         const statsFinal = {};
 
         const result = await BowlingFigureModel.aggregate([
-            { $match: { playerId: playerId } },
+            { $match: { playerId: playerId, 'isOfficialMatch': true, 'teamType.name': 'International' } },
             {
                 $group: {
                     _id: '$gameType.name',
