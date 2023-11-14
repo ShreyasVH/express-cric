@@ -20,6 +20,10 @@ class BattingScoreService {
     async getFieldingStats (playerId) {
         return this.battingScoreRepository.getFieldingStats(playerId);
     }
+
+    async getByMatchId (matchId) {
+        return this.battingScoreRepository.getByMatchId(matchId);
+    }
 }
 
 module.exports = BattingScoreService;

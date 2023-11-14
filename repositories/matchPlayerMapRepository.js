@@ -16,6 +16,11 @@ class MatchPlayerMapRepository {
 
         return finalResponse;
     }
+
+    async getByMatchId(matchId) {
+        await connectDatabase();
+        return MatchPlayerMapModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = MatchPlayerMapRepository;

@@ -143,6 +143,12 @@ class BattingScoreRepository {
 
         return statsFinal;
     }
+
+    async getByMatchId (matchId) {
+        await connectDatabase();
+
+        return BattingScoreModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = BattingScoreRepository;

@@ -14,6 +14,11 @@ class ExtrasRepository {
 
         return addedEntries;
     }
+
+    async getByMatchId (matchId) {
+        await connectDatabase();
+        return ExtrasModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = ExtrasRepository;

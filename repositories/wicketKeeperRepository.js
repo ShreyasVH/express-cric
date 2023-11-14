@@ -15,6 +15,11 @@ class WicketKeeperRepository {
 
         return addedEntries;
     }
+
+    async getByMatchId (matchId) {
+        await connectDatabase();
+        return WicketKeeperModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = WicketKeeperRepository;

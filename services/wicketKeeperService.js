@@ -8,6 +8,10 @@ class WicketKeeperService {
     async add (matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session) {
         return this.wicketKeeperRepository.add(matchId, playerIds, playerTeamMap, teamMap, teamTypeMap, gameType, session);
     }
+
+    async getByMatchId (matchId) {
+        return this.wicketKeeperRepository.getByMatchId(matchId);
+    }
 }
 
 module.exports = WicketKeeperService;
