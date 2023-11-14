@@ -17,7 +17,7 @@ class ExtrasRepository {
 
     async getByMatchId (matchId) {
         await connectDatabase();
-        return ExtrasModel.find({ 'matchId': matchId });
+        return ExtrasModel.find({ matchId: matchId });
     }
 }
 

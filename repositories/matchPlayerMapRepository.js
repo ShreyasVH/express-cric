@@ -19,7 +19,7 @@ class MatchPlayerMapRepository {
 
     async getByMatchId(matchId) {
         await connectDatabase();
-        return MatchPlayerMapModel.find({ 'matchId': matchId });
+        return MatchPlayerMapModel.find({ matchId: matchId });
     }
 }
 
