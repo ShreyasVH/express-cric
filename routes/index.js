@@ -36,5 +36,6 @@ router.put('/cric/v1/series/:id', series.update)
 router.get('/cric/v1/series/:id', series.getById)
 
 router.post('/cric/v1/matches', match.create)
+router.get('/cric/v1/matches/:id', match.get)
 
 module.exports = router

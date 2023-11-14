@@ -21,6 +21,11 @@ class MatchRepository {
         await connectDatabase();
         return MatchModel.find({ seriesId: seriesId }).sort({ startTime: 1 });
     }
+
+    async getById (id) {
+        await connectDatabase();
+        return MatchModel.findOne({ _id: id });
+    }
 }
 
 module.exports = MatchRepository;

@@ -15,6 +15,11 @@ class ManOfTheMatchRepository {
 
         return addedEntries;
     }
+
+    async getByMatchId (matchId) {
+        await connectDatabase();
+        return ManOfTheMatchModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = ManOfTheMatchRepository;

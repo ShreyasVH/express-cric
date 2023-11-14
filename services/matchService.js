@@ -20,6 +20,10 @@ class MatchService {
     async findBySeriesId (seriesId) {
         return this.matchRepository.findBySeriesId(seriesId);
     }
+
+    async getById (id) {
+        return this.matchRepository.getById(id);
+    }
 }
 
 module.exports = MatchService;

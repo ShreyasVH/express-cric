@@ -8,6 +8,10 @@ class ExtrasService {
     async add(matchId, extrasRequests, session) {
         return this.extrasRepository.add(matchId, extrasRequests, session);
     }
+
+    async getByMatchId (matchId) {
+        return this.extrasRepository.getByMatchId(matchId);
+    }
 }
 
 module.exports = ExtrasService;

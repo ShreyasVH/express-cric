@@ -15,6 +15,12 @@ class CaptainRepository {
 
         return addedEntries;
     }
+
+    async getByMatchId (matchId) {
+        await connectDatabase();
+
+        return CaptainModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = CaptainRepository;

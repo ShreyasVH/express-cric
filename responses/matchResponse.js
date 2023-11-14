@@ -33,10 +33,12 @@ class MatchResponse {
         this.stadium = stadium;
         this.startTime = match.startTime;
         this.players = players;
-        const playerMap = players.reduce((map, current) => {
-            map[current.id] = current;
-            return map;
-        }, {});
+        const playerMap = {};
+        for (const [teamId, playerList] of Object.entries(players)) {
+            for (const player of playerList) {
+                playerMap[player.id] = player;
+            }
+        }
         this.battingScores = battingScores;
         this.bowlingFigures = bowlingFigures;
         this.extras = extras;

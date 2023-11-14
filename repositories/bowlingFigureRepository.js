@@ -54,6 +54,12 @@ class BowlingFigureRepository {
 
         return statsFinal;
     }
+
+    async getByMatchId (matchId) {
+        await connectDatabase();
+
+        return BowlingFigureModel.find({ matchId: matchId });
+    }
 }
 
 module.exports = BowlingFigureRepository;

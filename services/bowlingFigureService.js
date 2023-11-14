@@ -12,6 +12,10 @@ class BowlingFigureService {
     async getBowlingStats (playerId) {
         return this.bowlingFigureRepository.getBowlingStats(playerId);
     }
+
+    async getByMatchId (matchId) {
+        return this.bowlingFigureRepository.getByMatchId(matchId);
+    }
 }
 
 module.exports = BowlingFigureService;
