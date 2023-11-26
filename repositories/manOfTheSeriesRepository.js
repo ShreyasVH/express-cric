@@ -18,7 +18,7 @@ class ManOfTheSeriesRepository {
         return ManOfTheSeriesModel.find({ seriesId: { $in: seriesIds } });
     }
 
-    async remove (seriesId, playerIds, session) {
+    async removePlayers (seriesId, playerIds, session) {
         await connectDatabase();
 
         if (playerIds.length > 0) {
@@ -26,6 +26,12 @@ class ManOfTheSeriesRepository {
             const ids = manOfTheSeriesList.map(mots => mots._id);
             await ManOfTheSeriesModel.deleteMany({ _id: { $in: ids } }, { session });
         }
+    }
+
+    async remove (seriesId) {
+        await connectDatabase();
+
+        await ManOfTheSeriesModel.deleteMany({ seriesId: seriesId });
     }
 }
 

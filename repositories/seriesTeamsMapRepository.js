@@ -15,12 +15,18 @@ class SeriesTeamsMapRepository {
         return SeriesTeamsMapModel.find({ seriesId: { $in: seriesIds } });
     }
 
-    async remove (seriesId, teamIds, session) {
+    async removePlayers (seriesId, teamIds, session) {
         await connectDatabase();
 
         const seriesTeamsMaps = await SeriesTeamsMapModel.find({ seriesId: seriesId, teamId: { $in: teamIds } });
         const ids = seriesTeamsMaps.map(stm => stm._id);
         SeriesTeamsMapModel.deleteMany({ _id: { $in: ids } }, { session });
+    }
+
+    async remove (seriesId) {
+        await connectDatabase();
+
+        SeriesTeamsMapModel.deleteMany({ seriesId: seriesId });
     }
 }
 

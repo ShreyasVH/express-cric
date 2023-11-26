@@ -43,6 +43,11 @@ class SeriesRepository {
         await connectDatabase();
         return SeriesModel.find({ tourId: tourId }).sort({ 'startTime': -1 });
     }
+
+    async remove (id) {
+        await connectDatabase();
+        await SeriesModel.deleteOne({ _id: id });
+    }
 }
 
 module.exports = SeriesRepository;

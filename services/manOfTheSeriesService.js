@@ -13,8 +13,12 @@ class ManOfTheSeriesService {
         return this.manOfTheSeriesRepository.getBySeriesIds(seriesIds);
     }
 
-    async remove (seriesId, playerIds, session) {
-        await this.manOfTheSeriesRepository.remove(seriesId, playerIds, session);
+    async removePlayers (seriesId, playerIds, session) {
+        await this.manOfTheSeriesRepository.removePlayers(seriesId, playerIds, session);
+    }
+
+    async remove (seriesId) {
+        await this.manOfTheSeriesRepository.remove(seriesId);
     }
 }
 

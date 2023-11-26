@@ -72,6 +72,10 @@ class SeriesService {
     async getByTourId (tourId) {
         return this.seriesRepository.getByTourId(tourId);
     }
+
+    async remove (id) {
+        await this.seriesRepository.remove(id);
+    }
 }
 
 module.exports = SeriesService;

@@ -13,8 +13,12 @@ class SeriesTeamsMapService {
         return this.seriesTeamsMapRepository.getBySeriesIds(seriesIds);
     }
 
-    async remove (seriesId, teamIds, session) {
-        await this.seriesTeamsMapRepository.remove(seriesId, teamIds, session);
+    async removePlayers (seriesId, teamIds, session) {
+        await this.seriesTeamsMapRepository.removePlayers(seriesId, teamIds, session);
+    }
+
+    async remove (seriesId) {
+        await this.seriesTeamsMapRepository.remove(seriesId);
     }
 }
 
