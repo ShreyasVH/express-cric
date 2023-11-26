@@ -60,6 +60,12 @@ class BowlingFigureRepository {
 
         return BowlingFigureModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await BowlingFigureModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = BowlingFigureRepository;

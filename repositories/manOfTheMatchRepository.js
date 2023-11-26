@@ -20,6 +20,12 @@ class ManOfTheMatchRepository {
         await connectDatabase();
         return ManOfTheMatchModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await ManOfTheMatchModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = ManOfTheMatchRepository;

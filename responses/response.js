@@ -9,6 +9,10 @@ class Response {
     return new Response(true, data, "");
   }
 
+  static successWithMessage(message) {
+    return new Response(true, null, message);
+  }
+
   static error(message) {
     return new Response(false, null, message);
   }

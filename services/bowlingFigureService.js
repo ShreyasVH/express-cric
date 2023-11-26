@@ -16,6 +16,10 @@ class BowlingFigureService {
     async getByMatchId (matchId) {
         return this.bowlingFigureRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.bowlingFigureRepository.remove(matchId);
+    }
 }
 
 module.exports = BowlingFigureService;

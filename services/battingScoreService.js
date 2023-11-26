@@ -24,6 +24,10 @@ class BattingScoreService {
     async getByMatchId (matchId) {
         return this.battingScoreRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.battingScoreRepository.remove(matchId);
+    }
 }
 
 module.exports = BattingScoreService;

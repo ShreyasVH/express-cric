@@ -26,6 +26,12 @@ class MatchRepository {
         await connectDatabase();
         return MatchModel.findOne({ _id: id });
     }
+
+    async remove (id) {
+        await connectDatabase();
+
+        await MatchModel.deleteOne({ _id: id });
+    }
 }
 
 module.exports = MatchRepository;

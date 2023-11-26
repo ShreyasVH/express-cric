@@ -12,6 +12,10 @@ class ManOfTheMatchService {
     async getByMatchId (matchId) {
         return this.manOfTheMatchRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.manOfTheMatchRepository.remove(matchId);
+    }
 }
 
 module.exports = ManOfTheMatchService;
