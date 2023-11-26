@@ -1,6 +1,6 @@
 const CreateRequest = require('../requests/series/createRequest');
 const UpdateRequest = require('../requests/series/updateRequest');
-const { asyncHandler, ok, created } = require('./base.js');
+const { asyncHandler, ok, created, okWithMessage } = require('./base.js');
 const TeamService = require('../services/teamService');
 const SeriesService = require('../services/seriesService');
 const CountryService = require('../services/countryService');
@@ -28,6 +28,7 @@ const StadiumResponse = require('../responses/stadiumResponse');
 const MatchMiniResponse = require('../responses/matchMiniResponse');
 const PaginatedResponse = require('../responses/paginatedResponse');
 const NotFoundException = require('../exceptions/notFoundException');
+const ConflictException = require('../exceptions/conflictException');
 const mongoose = require('mongoose');
 
 const seriesService = new SeriesService();
@@ -317,9 +318,9 @@ const update = asyncHandler(async (req, res, next) => {
     try {
         series = await seriesService.update(existingSeries, updateRequest, session);
         await seriesTeamsMapService.create(series._id, teamsToAdd, session);
-        await seriesTeamsMapService.remove(series._id, teamsToDelete, session);
+        await seriesTeamsMapService.removePlayers(series._id, teamsToDelete, session);
         await manOfTheSeriesService.add(series._id, manOfTheSeriesToAdd, session);
-        await manOfTheSeriesService.remove(series._id, manOfTheSeriesToDelete, session);
+        await manOfTheSeriesService.removePlayers(series._id, manOfTheSeriesToDelete, session);
 
         await session.commitTransaction();
         await session.endSession();
@@ -430,9 +431,42 @@ const getById = asyncHandler(async (req, res, next) => {
     ok(res, seriesResponse);
 });
 
+const remove = asyncHandler(async (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    const series = await seriesService.getById(id);
+    if (null === series) {
+        throw new NotFoundException('Series');
+    }
+
+    const matches = await matchService.findBySeriesId(id);
+    if (matches.length > 0) {
+        throw new ConflictException('Matches still exist');
+    }
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        await manOfTheSeriesService.remove(id);
+        await seriesTeamsMapService.remove(id);
+        await seriesService.remove(id);
+
+        await session.commitTransaction();
+        await session.endSession();
+    } catch (e) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw e;
+    }
+
+    okWithMessage(res, 'Deleted successfully');
+});
+
 module.exports = {
     create,
     getAll,
     update,
-    getById
+    getById,
+    remove
 };
