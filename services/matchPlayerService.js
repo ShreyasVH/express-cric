@@ -12,6 +12,10 @@ class MatchPlayerMapService {
     async getByMatchId (matchId) {
         return this.matchPlayerMapRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.matchPlayerMapRepository.remove(matchId);
+    }
 }
 
 module.exports = MatchPlayerMapService;

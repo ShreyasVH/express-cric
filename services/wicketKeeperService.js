@@ -12,6 +12,10 @@ class WicketKeeperService {
     async getByMatchId (matchId) {
         return this.wicketKeeperRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.wicketKeeperRepository.remove(matchId);
+    }
 }
 
 module.exports = WicketKeeperService;

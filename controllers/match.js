@@ -1,5 +1,5 @@
 const CreateRequest = require('../requests/matches/createRequest');
-const { asyncHandler, ok, created } = require('./base.js');
+const { asyncHandler, ok, created, okWithMessage } = require('./base.js');
 const TeamService = require('../services/teamService');
 const SeriesService = require('../services/seriesService');
 const CountryService = require('../services/countryService');
@@ -232,8 +232,6 @@ const create = asyncHandler(async (req, res, next) => {
         throw e;
     }
 
-    const playerResponses = allPlayers.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
-
     const teamPlayerMap = {
         [team1._id]: [],
         [team2._id]: []
@@ -309,7 +307,7 @@ const get = asyncHandler(async (req, res, next) => {
     }
 
     let winMarginTypeResponse = null;
-    if (null !== match.winMarginTypeId) {
+    if (null != match.winMarginTypeId) {
         const winMarginType = await winMarginTypeService.findById(match.winMarginTypeId);
         if (null === winMarginType) {
             throw new NotFoundException('Win margin type');
@@ -446,7 +444,40 @@ const get = asyncHandler(async (req, res, next) => {
     ok(res, matchResponse);
 });
 
+const remove = asyncHandler(async (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    const match = await matchService.getById(id);
+    if (null === match) {
+        throw new NotFoundException('Match');
+    }
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        await extrasService.remove(id);
+        await captainService.remove(id);
+        await wicketKeeperService.remove(id);
+        await manOfTheMatchService.remove(id);
+        await battingScoreService.remove(id);
+        await bowlingFigureService.remove(id);
+        await matchPlayerMapService.remove(id);
+        await matchService.remove(id);
+
+        await session.commitTransaction();
+        await session.endSession();
+    } catch (e) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw e;
+    }
+
+    okWithMessage(res, 'Deleted successfully');
+});
+
 module.exports = {
     create,
-    get
+    get,
+    remove
 };
