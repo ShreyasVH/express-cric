@@ -19,6 +19,12 @@ class ExtrasRepository {
         await connectDatabase();
         return ExtrasModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await ExtrasModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = ExtrasRepository;

@@ -21,6 +21,12 @@ class CaptainRepository {
 
         return CaptainModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await CaptainModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = CaptainRepository;

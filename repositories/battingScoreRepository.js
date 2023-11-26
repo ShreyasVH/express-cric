@@ -149,6 +149,12 @@ class BattingScoreRepository {
 
         return BattingScoreModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await BattingScoreModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = BattingScoreRepository;

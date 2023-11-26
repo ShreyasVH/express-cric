@@ -12,6 +12,10 @@ class ExtrasService {
     async getByMatchId (matchId) {
         return this.extrasRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.extrasRepository.remove(matchId);
+    }
 }
 
 module.exports = ExtrasService;

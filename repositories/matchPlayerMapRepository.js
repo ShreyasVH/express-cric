@@ -21,6 +21,12 @@ class MatchPlayerMapRepository {
         await connectDatabase();
         return MatchPlayerMapModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await MatchPlayerMapModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = MatchPlayerMapRepository;

@@ -20,6 +20,12 @@ class WicketKeeperRepository {
         await connectDatabase();
         return WicketKeeperModel.find({ matchId: matchId });
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await WicketKeeperModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = WicketKeeperRepository;

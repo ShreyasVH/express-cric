@@ -12,6 +12,10 @@ class CaptainService {
     async getByMatchId (matchId) {
         return this.captainRepository.getByMatchId(matchId);
     }
+
+    async remove (matchId) {
+        await this.captainRepository.remove(matchId);
+    }
 }
 
 module.exports = CaptainService;

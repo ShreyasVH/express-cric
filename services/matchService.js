@@ -24,6 +24,10 @@ class MatchService {
     async getById (id) {
         return this.matchRepository.getById(id);
     }
+
+    async remove (id) {
+        await this.matchRepository.remove(id);
+    }
 }
 
 module.exports = MatchService;
