@@ -239,6 +239,9 @@ const create = asyncHandler(async (req, res, next) => {
     for (const player of allPlayers) {
         const playerMiniResponse = new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId]));
         const teamId = playerTeamMap[player.id];
+        if (!teamPlayerMap.hasOwnProperty(teamId)) {
+            teamPlayerMap[teamId] = [];
+        }
         teamPlayerMap[teamId].push(playerMiniResponse);
     }
 
