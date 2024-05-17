@@ -15,8 +15,10 @@ class MatchResponse {
         let winMarginTypeResponse = null;
         if (match.winnerId) {
             winner = teamMap[match.winnerId];
-            winMargin = match.winMargin;
-            winMarginTypeResponse = new WinMarginTypeResponse(winMarginType);
+            if (match.winMargin) {
+                winMargin = match.winMargin;
+                winMarginTypeResponse = new WinMarginTypeResponse(winMarginType);
+            }
         }
         this.winner = winner;
         this.winMargin = winMargin;
