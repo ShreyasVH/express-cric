@@ -220,7 +220,7 @@ const update = asyncHandler(async (req, res, next) => {
             throw new NotFoundException('Team');
         }
 
-        teamsToAdd = updateRequest.teams.map(teamId => !existingTeamIds.includes(teamId));
+        teamsToAdd = updateRequest.teams.filter(teamId => !existingTeamIds.includes(teamId));
     } else {
         teams = await teamService.getByIds(existingTeamIds);
     }
