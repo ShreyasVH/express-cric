@@ -16,6 +16,10 @@ class WicketKeeperService {
     async remove (matchId) {
         await this.wicketKeeperRepository.remove(matchId);
     }
+
+    async merge (mergeRequest) {
+        await this.wicketKeeperRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = WicketKeeperService;

@@ -20,6 +20,10 @@ class ManOfTheSeriesService {
     async remove (seriesId) {
         await this.manOfTheSeriesRepository.remove(seriesId);
     }
+
+    async merge (mergeRequest) {
+        await this.manOfTheSeriesRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = ManOfTheSeriesService;

@@ -27,6 +27,12 @@ class CaptainRepository {
 
         await CaptainModel.deleteMany({ matchId: matchId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await CaptainModel.updateMany({ 'playerId': mergeRequest.playerIdToMerge }, { "$set": { 'playerId': mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = CaptainRepository;

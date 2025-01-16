@@ -1,9 +1,15 @@
 const CreateRequest = require('../requests/players/createRequest');
-const { asyncHandler, ok, created } = require('./base.js');
+const MergeRequest = require('../requests/players/mergeRequest');
+const { asyncHandler, ok, created, okWithMessage } = require('./base.js');
 const PlayerService = require('../services/playerService');
 const CountryService = require('../services/countryService');
 const BattingScoreService = require('../services/battingScoreService');
 const BowlingFigureService = require('../services/bowlingFigureService');
+const ManOfTheSeriesService = require('../services/manOfTheSeriesService');
+const MatchPlayerMapService = require('../services/matchPlayerService');
+const CaptainService = require('../services/captainService');
+const WicketKeeperService = require('../services/wicketKeeperService');
+const ManOfTheMatchService = require('../services/manOfTheMatchService');
 const PlayerMiniResponse = require('../responses/playerMiniResponse');
 const PlayerResponse = require('../responses/playerResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -17,6 +23,13 @@ const playerService = new PlayerService();
 const countryService = new CountryService();
 const battingScoreService = new BattingScoreService();
 const bowlingFigureService = new BowlingFigureService();
+const manOfTheSeriesService = new ManOfTheSeriesService();
+const matchPlayerMapService = new MatchPlayerMapService();
+const captainService = new CaptainService();
+const wicketKeeperService = new WicketKeeperService();
+const manOfTheMatchService = new ManOfTheMatchService();
+
+const mongoose = require('mongoose');
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -127,8 +140,45 @@ const getById = asyncHandler(async (req, res, next) => {
     return ok(res, playerResponse);
 });
 
+const merge = asyncHandler(async (req, res, next) => {
+    const mergeRequest = new MergeRequest(req.body);
+
+    const player = await playerService.getById(mergeRequest.playerIdToMerge);
+    if (null === player) {
+        throw new NotFoundException('Player');
+    }
+
+    const originalPlayer = await playerService.getById(mergeRequest.originalPlayerId);
+    if (null === originalPlayer) {
+        throw new NotFoundException('Original Player');
+    }
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        await battingScoreService.merge(mergeRequest);
+        await bowlingFigureService.merge(mergeRequest);
+        await captainService.merge(mergeRequest);
+        await wicketKeeperService.merge(mergeRequest);
+        await manOfTheMatchService.merge(mergeRequest);
+        await manOfTheSeriesService.merge(mergeRequest);
+        await matchPlayerMapService.merge(mergeRequest);
+        await playerService.remove(mergeRequest.playerIdToMerge);
+
+        await session.commitTransaction();
+        await session.endSession();
+    } catch (e) {
+        await session.abortTransaction();
+        await session.endSession();
+        throw e;
+    }
+    okWithMessage(res, 'Success');
+});
+
 module.exports = {
     create,
     getAll,
-    getById
+    getById,
+    merge
 };

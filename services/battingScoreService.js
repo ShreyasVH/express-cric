@@ -28,6 +28,10 @@ class BattingScoreService {
     async remove (matchId) {
         await this.battingScoreRepository.remove(matchId);
     }
+
+    async merge (mergeRequest) {
+        await this.battingScoreRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = BattingScoreService;

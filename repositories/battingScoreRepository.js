@@ -155,6 +155,15 @@ class BattingScoreRepository {
 
         await BattingScoreModel.deleteMany({ matchId: matchId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await BattingScoreModel.updateMany({ 'batsman.playerId': mergeRequest.playerIdToMerge }, { "$set": { 'batsman.playerId': mergeRequest.originalPlayerId } });
+        await BattingScoreModel.updateMany({ 'bowler.playerId': mergeRequest.playerIdToMerge }, { "$set": { 'bowler.playerId': mergeRequest.originalPlayerId } });
+        await BattingScoreModel.updateMany({ 'fielders.playerId': mergeRequest.playerIdToMerge }, { "$set": { 'fielders.$.playerId': mergeRequest.originalPlayerId } });
+        await BattingScoreModel.updateMany({ 'fielders.playerId': mergeRequest.playerIdToMerge }, { "$set": { 'fielders.playerId': mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = BattingScoreRepository;

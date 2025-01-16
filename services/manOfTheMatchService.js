@@ -16,6 +16,10 @@ class ManOfTheMatchService {
     async remove (matchId) {
         await this.manOfTheMatchRepository.remove(matchId);
     }
+
+    async merge (mergeRequest) {
+        await this.manOfTheMatchRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = ManOfTheMatchService;

@@ -26,6 +26,12 @@ class WicketKeeperRepository {
 
         await WicketKeeperModel.deleteMany({ matchId: matchId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await WicketKeeperModel.updateMany({ 'playerId': mergeRequest.playerIdToMerge }, { "$set": { 'playerId': mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = WicketKeeperRepository;

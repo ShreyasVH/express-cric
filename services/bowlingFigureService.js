@@ -20,6 +20,10 @@ class BowlingFigureService {
     async remove (matchId) {
         await this.bowlingFigureRepository.remove(matchId);
     }
+
+    async merge (mergeRequest) {
+        await this.bowlingFigureRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = BowlingFigureService;

@@ -16,6 +16,10 @@ class CaptainService {
     async remove (matchId) {
         await this.captainRepository.remove(matchId);
     }
+
+    async merge (mergeRequest) {
+        await this.captainRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = CaptainService;
