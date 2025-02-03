@@ -66,6 +66,12 @@ class BowlingFigureRepository {
 
         await BowlingFigureModel.deleteMany({ matchId: matchId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await BowlingFigureModel.updateMany({ 'playerId': mergeRequest.playerIdToMerge }, { "$set": { 'playerId': mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = BowlingFigureRepository;

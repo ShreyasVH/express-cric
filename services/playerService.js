@@ -32,6 +32,10 @@ class PlayerService {
     async getById (id) {
         return this.playerRepository.findById(id);
     }
+
+    async remove (id) {
+        await this.playerRepository.remove(id);
+    }
 }
 
 module.exports = PlayerService;

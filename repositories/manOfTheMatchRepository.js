@@ -26,6 +26,12 @@ class ManOfTheMatchRepository {
 
         await ManOfTheMatchModel.deleteMany({ matchId: matchId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await ManOfTheMatchModel.updateMany({ 'playerId': mergeRequest.playerIdToMerge }, { "$set": { 'playerId': mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = ManOfTheMatchRepository;

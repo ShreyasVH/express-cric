@@ -33,6 +33,12 @@ class ManOfTheSeriesRepository {
 
         await ManOfTheSeriesModel.deleteMany({ seriesId: seriesId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await ManOfTheSeriesModel.updateMany({ playerId: mergeRequest.playerIdToMerge }, { "$set": { playerId: mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = ManOfTheSeriesRepository;

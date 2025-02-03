@@ -27,6 +27,12 @@ class MatchPlayerMapRepository {
 
         await MatchPlayerMapModel.deleteMany({ matchId: matchId });
     }
+
+    async merge (mergeRequest) {
+        await connectDatabase();
+
+        await MatchPlayerMapModel.updateMany({ playerId: mergeRequest.playerIdToMerge }, { "$set": { playerId: mergeRequest.originalPlayerId } });
+    }
 }
 
 module.exports = MatchPlayerMapRepository;

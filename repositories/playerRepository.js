@@ -37,6 +37,11 @@ class PlayerRepository {
         await connectDatabase();
         return PlayerModel.findOne({ _id: id });
     }
+
+    async remove (id) {
+        await connectDatabase();
+        await PlayerModel.deleteOne({ _id: id });
+    }
 }
 
 module.exports = PlayerRepository;

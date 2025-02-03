@@ -16,6 +16,10 @@ class MatchPlayerMapService {
     async remove (matchId) {
         await this.matchPlayerMapRepository.remove(matchId);
     }
+
+    async merge (mergeRequest) {
+        await this.matchPlayerMapRepository.merge(mergeRequest);
+    }
 }
 
 module.exports = MatchPlayerMapService;
