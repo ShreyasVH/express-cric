@@ -20,7 +20,7 @@ class PlayerRepository {
     async findAll(page, limit) {
         await connectDatabase();
 
-        return PlayerModel.find().sort({ 'name': 1 }).skip((page - 1) * limit).limit(limit);
+        return PlayerModel.find().sort({ 'name': 1, '_id': 1 }).skip((page - 1) * limit).limit(limit);
     }
 
     async getTotalCount() {
