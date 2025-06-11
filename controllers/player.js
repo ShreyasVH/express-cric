@@ -58,7 +58,7 @@ const getAll = asyncHandler(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 25;
     const players = await playerService.getAll(page, limit);
-    const playerResponses = getPlayerResponses(players);
+    const playerResponses = await getPlayerResponses(players);
     let totalCount = 0;
     if (page === 1) {
         totalCount = await playerService.getTotalCount();
@@ -185,7 +185,7 @@ const search = asyncHandler(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 25;
     const keyword = req.query.keyword || '';
     const players = await playerService.search(keyword, page, limit);
-    const playerResponses = getPlayerResponses(players);
+    const playerResponses = await getPlayerResponses(players);
     let totalCount = 0;
     if (page === 1) {
         totalCount = await playerService.searchCount(keyword);
