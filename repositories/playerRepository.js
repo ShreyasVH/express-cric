@@ -42,6 +42,22 @@ class PlayerRepository {
         await connectDatabase();
         await PlayerModel.deleteOne({ _id: id });
     }
+
+    async search(keyword, page, limit) {
+        await connectDatabase();
+
+        return PlayerModel.find({
+            name: { $regex: keyword, $options: "i" }
+        }).sort({ 'name': 1, '_id': 1 }).skip((page - 1) * limit).limit(limit);
+    }
+
+    async searchCount(keyword) {
+        await connectDatabase();
+
+        return PlayerModel.countDocuments({
+            name: { $regex: keyword, $options: "i" }
+        });
+    }
 }
 
 module.exports = PlayerRepository;

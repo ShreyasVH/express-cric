@@ -31,6 +31,17 @@ const manOfTheMatchService = new ManOfTheMatchService();
 
 const mongoose = require('mongoose');
 
+const getPlayerResponses = async (players) => {
+    const countryIds = players.map(team => team.countryId);
+    const countries = await countryService.findByIds(countryIds);
+    const countryMap = countries.reduce((object, current) => {
+        object[current._id] = current;
+        return object;
+    }, {});
+
+    return players.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
+}
+
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
 
@@ -47,14 +58,7 @@ const getAll = asyncHandler(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 25;
     const players = await playerService.getAll(page, limit);
-    const countryIds = players.map(team => team.countryId);
-    const countries = await countryService.findByIds(countryIds);
-    const countryMap = countries.reduce((object, current) => {
-        object[current._id] = current;
-        return object;
-    }, {});
-
-    const playerResponses = players.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
+    const playerResponses = getPlayerResponses(players);
     let totalCount = 0;
     if (page === 1) {
         totalCount = await playerService.getTotalCount();
@@ -176,9 +180,23 @@ const merge = asyncHandler(async (req, res, next) => {
     okWithMessage(res, 'Success');
 });
 
+const search = asyncHandler(async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 25;
+    const keyword = req.query.keyword || '';
+    const players = await playerService.search(keyword, page, limit);
+    const playerResponses = getPlayerResponses(players);
+    let totalCount = 0;
+    if (page === 1) {
+        totalCount = await playerService.searchCount(keyword);
+    }
+    ok(res, new PaginatedResponse(totalCount, playerResponses, page, limit));
+});
+
 module.exports = {
     create,
     getAll,
     getById,
-    merge
+    merge,
+    search
 };
