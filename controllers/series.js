@@ -62,7 +62,7 @@ const create = asyncHandler(async (req, res, next) => {
     }
     countryIds.push(createRequest.homeCountryId);
 
-    let players;
+    let players = [];
     let manOfTheSeriesToAdd = [];
     if (!!createRequest.manOfTheSeriesList) {
         players = await playerService.getByIds(createRequest.manOfTheSeriesList);
