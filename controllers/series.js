@@ -55,12 +55,26 @@ const create = asyncHandler(async (req, res, next) => {
     }
 
     const teamTypeIds = [];
-    const countryIds = [];
+    let countryIds = [];
     for (const team of teams) {
         teamTypeIds.push(team.typeId);
         countryIds.push(team.countryId);
     }
     countryIds.push(createRequest.homeCountryId);
+
+    let players;
+    let manOfTheSeriesToAdd = [];
+    if (!!createRequest.manOfTheSeriesList) {
+        players = await playerService.getByIds(createRequest.manOfTheSeriesList);
+        if (players.length !== createRequest.manOfTheSeriesList.filter((playerId, index, m) => m.indexOf(playerId) === index).length) {
+            throw new NotFoundException('Player');
+        }
+        manOfTheSeriesToAdd = createRequest.manOfTheSeriesList;
+    }
+
+    const playerCountryIds = players.map(player => player.countryId);
+    countryIds = countryIds.concat(playerCountryIds);
+
     const countries = await countryService.findByIds(countryIds);
     const countryMap = countries.reduce((map, country) => {
         map[country.id] = country;
@@ -94,6 +108,7 @@ const create = asyncHandler(async (req, res, next) => {
     try {
         series = await seriesService.create(createRequest, session);
         await seriesTeamsMapService.create(series._id, createRequest.teams, session);
+        await manOfTheSeriesService.add(series._id, manOfTheSeriesToAdd, session);
 
         await session.commitTransaction();
         await session.endSession();
@@ -110,7 +125,8 @@ const create = asyncHandler(async (req, res, next) => {
     }, {});
 
     const teamResponses = teams.map(team => new TeamResponse(team, new CountryResponse(country), new TeamTypeResponse(teamTypeMap[team.typeId])));
-    created(res, new SeriesResponse(series, new CountryResponse(country), new TourMiniResponse(tour), new SeriesTypeResponse(seriesType), new GameTypeResponse(gameType), teamResponses, []));
+    const playerResponses = players.map(player => new PlayerMiniResponse(player, new CountryResponse(countryMap[player.countryId])));
+    created(res, new SeriesResponse(series, new CountryResponse(country), new TourMiniResponse(tour), new SeriesTypeResponse(seriesType), new GameTypeResponse(gameType), teamResponses, playerResponses));
 });
 
 const getAll = asyncHandler(async (req, res, next) => {
