@@ -12,15 +12,15 @@ class StadiumRepository {
     return await stadiumModel.save();
   }
 
-  async findByNameAndCountryId (name, countryId) {
+  async findByNameAndCountryIdAndCity (name, countryId, city) {
     await connectDatabase();
-    return StadiumModel.findOne({ name, countryId });
+    return StadiumModel.findOne({ name, countryId, city });
   }
 
   async findAll(page, limit) {
     await connectDatabase();
 
-    return StadiumModel.find().sort({ 'name': 1 }).skip((page - 1) * limit).limit(limit);
+    return StadiumModel.find().sort({ 'name': 1, '_id': 1 }).skip((page - 1) * limit).limit(limit);
   }
 
   async getTotalCount() {

@@ -9,7 +9,7 @@ class StadiumService {
   async create(createRequest) {
     createRequest.validate();
 
-    const existingStadium = await this.stadiumRepository.findByNameAndCountryId(createRequest.name, createRequest.countryId);
+    const existingStadium = await this.stadiumRepository.findByNameAndCountryIdAndCity(createRequest.name, createRequest.countryId, createRequest.city);
     if (null !== existingStadium) {
       throw new ConflictException('Stadium');
     }
