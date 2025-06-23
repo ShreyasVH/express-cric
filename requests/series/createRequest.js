@@ -9,6 +9,7 @@ class CreateRequest {
         this.gameTypeId = requestBody.gameTypeId;
         this.startTime = requestBody.startTime;
         this.teams = requestBody.teams;
+        this.manOfTheSeriesList = requestBody.manOfTheSeriesList;
     }
 
     validate () {
