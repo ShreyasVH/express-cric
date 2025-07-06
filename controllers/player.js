@@ -18,6 +18,7 @@ const BowlingStats = require('../responses/bowlingStats');
 const FieldingStats = require('../responses/fieldingStats');
 const PaginatedResponse = require('../responses/paginatedResponse');
 const NotFoundException = require('../exceptions/notFoundException');
+const BadRequestException = require('../exceptions/badRequestException');
 
 const playerService = new PlayerService();
 const countryService = new CountryService();
@@ -146,6 +147,10 @@ const getById = asyncHandler(async (req, res, next) => {
 
 const merge = asyncHandler(async (req, res, next) => {
     const mergeRequest = new MergeRequest(req.body);
+
+    if (mergeRequest.playerIdToMerge === mergeRequest.originalPlayerId) {
+        throw new BadRequestException('Same player given');
+    }
 
     const player = await playerService.getById(mergeRequest.playerIdToMerge);
     if (null === player) {
