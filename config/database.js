@@ -6,6 +6,8 @@ async function connectDatabase() {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
+
+    mongoose.set('debug', true);
   } catch (error) {
     console.error('Failed to connect to MongoDB:', error);
     throw error;
