@@ -11,8 +11,11 @@ async function connectDatabase() {
     await mongoose.connect('mongodb://' + process.env.MONGODB_IP + ':' + process.env.MONGODB_PORT + '/' + process.env.MONGODB_DB, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      maxPoolSize: 25,
+        serverSelectionTimeoutMS: 3000,  // faster failover
+        socketTimeoutMS: 30000, 
     });
-    // isConnected = true;
+    isConnected = true;
 
     // mongoose.set('debug', function (collectionName, method, query, doc, options) {
     //   const start = Date.now();
