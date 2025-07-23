@@ -34,7 +34,12 @@ class CountryService {
   }
 
   async findByIds (ids) {
-    return this.countryRepository.findByIds(ids);
+    let countries = [];
+    if (ids.length > 0) {
+      countries = this.countryRepository.findByIds(ids);
+    }
+
+    return countries;
   }
 }
 

@@ -4,15 +4,15 @@ const { configureAutoIncrement } = require('./baseModel');
 const TeamTypeResponse = require('../responses/teamTypeResponse');
 
 const manOfTheMatchSchema = new mongoose.Schema({
-    _id: { type: Number },
-    matchId: { type: Number, required: true },
-    playerId: { type: Number, required: true },
-    teamId: { type: Number, required: true },
+    // _id: { type: Number },
+    matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
+    playerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
+    teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
     gameType: { type: Object, required: true },
     teamType: { type: Object, required: true }
 },  { collection: 'manOfTheMatch' });
 
-configureAutoIncrement(manOfTheMatchSchema, 'manOfTheMatch');
+// configureAutoIncrement(manOfTheMatchSchema, 'manOfTheMatch');
 
 const ManOfTheMatchModel = mongoose.model('ManOfTheMatch', manOfTheMatchSchema);
 

@@ -5,9 +5,9 @@ const { dateTimeSchema } = require('./schemaExtensions');
 const DismissalModeResponse = require('../responses/dismissalModeResponse');
 
 const battingScoreSchema = new mongoose.Schema({
-    _id: { type: Number },
+    // _id: { type: Number },
     batsman: { type: Object, required: true },
-    matchId: { type: Number, required: true },
+    matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
     runs: { type: Number, required: true },
     balls: { type: Number, required: true },
     fours: { type: Number, required: true },
@@ -21,25 +21,25 @@ const battingScoreSchema = new mongoose.Schema({
     gameType: { type: Object, required: true },
     teamType: { type: Object, require: true },
     matchStartTime: dateTimeSchema,
-    matchStadiumId: { type: Number, required: true },
+    matchStadiumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stadium', required: true },
     opposingTeam: { type: Object, required: true }
 }, { collection: 'battingScores' });
 
-battingScoreSchema.pre('save', async function (next) {
-    const battingScore = this;
-    try {
-        const counter = await CounterModel.findByIdAndUpdate(
-            'battingScores',
-            { $inc: { sequenceValue: 1 } },
-            { new: true, upsert: true }
-        );
-        battingScore._id = counter.sequenceValue;
-        next();
-    } catch (error) {
-        console.error('Failed to generate batting score ID:', error);
-        throw error;
-    }
-});
+// battingScoreSchema.pre('save', async function (next) {
+//     const battingScore = this;
+//     try {
+//         const counter = await CounterModel.findByIdAndUpdate(
+//             'battingScores',
+//             { $inc: { sequenceValue: 1 } },
+//             { new: true, upsert: true }
+//         );
+//         battingScore._id = counter.sequenceValue;
+//         next();
+//     } catch (error) {
+//         console.error('Failed to generate batting score ID:', error);
+//         throw error;
+//     }
+// });
 
 const BattingScoreModel = mongoose.model('BattingScore', battingScoreSchema);
 

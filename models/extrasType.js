@@ -7,7 +7,7 @@ const extrasTypeSchema = new mongoose.Schema({
     name: { type: String, required: true }
 },  { collection: 'extrasTypes' });
 
-configureAutoIncrement(extrasTypeSchema, 'extrasTypes');
+// configureAutoIncrement(extrasTypeSchema, 'extrasTypes');
 
 const ExtrasTypeModel = mongoose.model('ExtrasType', extrasTypeSchema);
 

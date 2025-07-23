@@ -7,21 +7,21 @@ const dismissalModeSchema = new mongoose.Schema({
     name: { type: String, required: true }
 },  { collection: 'dismissalModes' });
 
-dismissalModeSchema.pre('save', async function (next) {
-    const dismissalMode = this;
-    try {
-        const counter = await CounterModel.findByIdAndUpdate(
-            'dismissalMode',
-            { $inc: { sequenceValue: 1 } },
-            { new: true, upsert: true }
-        );
-        dismissalMode._id = counter.sequenceValue;
-        next();
-    } catch (error) {
-        console.error('Failed to generate dismissal mode ID:', error);
-        throw error;
-    }
-});
+// dismissalModeSchema.pre('save', async function (next) {
+//     const dismissalMode = this;
+//     try {
+//         const counter = await CounterModel.findByIdAndUpdate(
+//             'dismissalMode',
+//             { $inc: { sequenceValue: 1 } },
+//             { new: true, upsert: true }
+//         );
+//         dismissalMode._id = counter.sequenceValue;
+//         next();
+//     } catch (error) {
+//         console.error('Failed to generate dismissal mode ID:', error);
+//         throw error;
+//     }
+// });
 
 const DismissalModeModel = mongoose.model('DismissalMode', dismissalModeSchema);
 

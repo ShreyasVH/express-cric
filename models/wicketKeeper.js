@@ -4,15 +4,15 @@ const { configureAutoIncrement } = require('./baseModel');
 const TeamTypeResponse = require('../responses/teamTypeResponse');
 
 const wicketKeeperSchema = new mongoose.Schema({
-    _id: { type: Number },
-    matchId: { type: Number, required: true },
-    playerId: { type: Number, required: true },
-    teamId: { type: Number, required: true },
+    // _id: { type: Number },
+    matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
+    playerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
+    teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
     gameType: { type: Object, required: true },
     teamType: { type: Object, required: true }
 },  { collection: 'wicketKeepers' });
 
-configureAutoIncrement(wicketKeeperSchema, 'wicketKeepers');
+// configureAutoIncrement(wicketKeeperSchema, 'wicketKeepers');
 
 const WicketKeeperModel = mongoose.model('WicketKeeper', wicketKeeperSchema);
 
