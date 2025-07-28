@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { BattingScoreModel, BattingScore } = require('../models/battingScore');
 
 class BattingScoreRepository {

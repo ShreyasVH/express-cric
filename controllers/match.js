@@ -267,7 +267,8 @@ const create = asyncHandler(async (req, res, next) => {
 });
 
 const get = asyncHandler(async (req, res, next) => {
-    const id = parseInt(req.params.id);
+    // const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     const match = await matchService.getById(id);
     if (null === match) {

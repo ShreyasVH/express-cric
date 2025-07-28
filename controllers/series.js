@@ -359,7 +359,8 @@ const update = asyncHandler(async (req, res, next) => {
 });
 
 const getById = asyncHandler(async (req, res, next) => {
-    const id = parseInt(req.params.id);
+    // const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     const series = await seriesService.getById(id);
     if (null === series) {

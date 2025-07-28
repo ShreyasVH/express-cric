@@ -40,7 +40,7 @@ const getAllYears = asyncHandler(async (req, res, next) => {
 });
 
 const getById = asyncHandler(async (req, res, next) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const tour = await tourService.getById(id);
   if (null == tour) {
     throw new NotFoundException('Tour');

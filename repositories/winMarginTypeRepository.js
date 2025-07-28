@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { WinMarginTypeModel } = require('../models/winMarginType');
 
 class WinMarginTypeRepository {

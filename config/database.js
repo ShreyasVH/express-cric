@@ -81,4 +81,11 @@ async function connectDatabase() {
   }
 }
 
-module.exports = connectDatabase;
+const getObjectId = idString => {
+  return new mongoose.Types.ObjectId(idString);
+};
+
+module.exports = {
+  connectDatabase,
+  getObjectId
+};

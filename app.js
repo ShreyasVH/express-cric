@@ -52,6 +52,9 @@ app.use((err, req, res, next) => {
     message = err.description;
   }
 
+  console.log(status);
+  console.log(message);
+
   res
     .status(status)
     .json(errorResponse(message));

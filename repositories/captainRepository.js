@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { CaptainModel, Captain } = require('../models/captain');
 
 class CaptainRepository {

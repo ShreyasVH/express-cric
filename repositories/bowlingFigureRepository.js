@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase, getObjectId } = require('../config/database');
 const { BowlingFigureModel, BowlingFigure } = require('../models/bowlingFigure');
 
 class BowlingFigureRepository {
@@ -21,7 +21,7 @@ class BowlingFigureRepository {
         const statsFinal = {};
 
         const result = await BowlingFigureModel.aggregate([
-            { $match: { playerId: playerId, 'isOfficialMatch': true, 'teamType.name': 'International' } },
+            { $match: { playerId: getObjectId(playerId), 'isOfficialMatch': true, 'teamType.name': 'International' } },
             {
                 $group: {
                     _id: '$gameType.name',

@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { ExtrasTypeModel } = require('../models/extrasType');
 
 class ExtrasTypeRepository {
