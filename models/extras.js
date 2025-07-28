@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 
-const { configureAutoIncrement } = require('./baseModel');
-
 const extrasSchema = new mongoose.Schema({
-    // _id: { type: Number },
     matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
     typeId: { type: Number, required: true },
     runs: { type: Number, required: true },
@@ -11,8 +8,6 @@ const extrasSchema = new mongoose.Schema({
     bowlingTeamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
     innings: { type: Number, required: true }
 },  { collection: 'extras' });
-
-// configureAutoIncrement(extrasSchema, 'extras');
 
 const ExtrasModel = mongoose.model('Extras', extrasSchema);
 

@@ -1,18 +1,14 @@
 const mongoose = require('mongoose');
 
-const { configureAutoIncrement } = require('./baseModel');
 const TeamTypeResponse = require('../responses/teamTypeResponse');
 
 const captainSchema = new mongoose.Schema({
-    // _id: { type: Number },
     matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
     playerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
     teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
     gameType: { type: Object, required: true },
     teamType: { type: Object, required: true }
 },  { collection: 'captains' });
-
-// configureAutoIncrement(captainSchema, 'captains');
 
 const CaptainModel = mongoose.model('Captain', captainSchema);
 

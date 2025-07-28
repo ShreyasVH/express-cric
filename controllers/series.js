@@ -208,7 +208,7 @@ const getAll = asyncHandler(async (req, res, next) => {
 });
 
 const update = asyncHandler(async (req, res, next) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
     const updateRequest = new UpdateRequest(req.body);
 
     const existingSeries = await seriesService.getById(id);
@@ -359,7 +359,6 @@ const update = asyncHandler(async (req, res, next) => {
 });
 
 const getById = asyncHandler(async (req, res, next) => {
-    // const id = parseInt(req.params.id);
     const id = req.params.id;
 
     const series = await seriesService.getById(id);
@@ -449,7 +448,7 @@ const getById = asyncHandler(async (req, res, next) => {
 });
 
 const remove = asyncHandler(async (req, res, next) => {
-    const id = parseInt(req.params.id);
+    const id = req.params.id;
 
     const series = await seriesService.getById(id);
     if (null === series) {

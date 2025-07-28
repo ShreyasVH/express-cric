@@ -68,7 +68,6 @@ const getAll = asyncHandler(async (req, res, next) => {
 });
 
 const getById = asyncHandler(async (req, res, next) => {
-    // const id = parseInt(req.params.id);
     const id = req.params.id;
 
     const player = await playerService.getById(id);

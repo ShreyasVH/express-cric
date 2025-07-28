@@ -1,10 +1,8 @@
 const mongoose = require('mongoose');
 
-const { CounterModel } = require('./counter');
 const { dateTimeSchema } = require('./schemaExtensions');
 
 const matchSchema = new mongoose.Schema({
-    // _id: { type: Number },
     seriesId: { type: mongoose.Schema.Types.ObjectId, ref: 'Series', required: true },
     team1Id: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
     team2Id: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
@@ -18,22 +16,6 @@ const matchSchema = new mongoose.Schema({
     startTime: dateTimeSchema,
     isOfficial: { type: Boolean, required: true }
 },  { collection: 'matches' });
-
-// matchSchema.pre('save', async function (next) {
-//     const match = this;
-//     try {
-//         const counter = await CounterModel.findByIdAndUpdate(
-//             'match',
-//             { $inc: { sequenceValue: 1 } },
-//             { new: true, upsert: true }
-//         );
-//         match._id = counter.sequenceValue;
-//         next();
-//     } catch (error) {
-//         console.error('Failed to generate match ID:', error);
-//         throw error;
-//     }
-// });
 
 const MatchModel = mongoose.model('Match', matchSchema);
 
