@@ -1,17 +1,32 @@
 const mongoose = require('mongoose');
 
+let isConnected = false;
+
 async function connectDatabase() {
+  if (isConnected) {
+    return;
+  }
+
   try {
     await mongoose.connect('mongodb://' + process.env.MONGODB_IP + ':' + process.env.MONGODB_PORT + '/' + process.env.MONGODB_DB, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
+      maxPoolSize: 25,
+      serverSelectionTimeoutMS: 3000,
+      socketTimeoutMS: 30000,
     });
-
-    mongoose.set('debug', true);
+    isConnected = true;
   } catch (error) {
     console.error('Failed to connect to MongoDB:', error);
     throw error;
   }
 }
 
-module.exports = connectDatabase;
+const getObjectId = idString => {
+  return new mongoose.Types.ObjectId(idString);
+};
+
+module.exports = {
+  connectDatabase,
+  getObjectId
+};

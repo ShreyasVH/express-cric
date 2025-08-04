@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { WicketKeeperModel, WicketKeeper } = require('../models/wicketKeeper');
 
 class WicketKeeperRepository {

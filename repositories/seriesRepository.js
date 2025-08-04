@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const mongoose = require('mongoose');
 const { SeriesModel, Series } = require('../models/series');
 

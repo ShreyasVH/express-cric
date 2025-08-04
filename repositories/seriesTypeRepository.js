@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { SeriesTypeModel } = require('../models/seriesType');
 
 class SeriesTypeRepository {

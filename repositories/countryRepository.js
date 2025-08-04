@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { CountryModel, Country } = require('../models/country');
 
 class CountryRepository {

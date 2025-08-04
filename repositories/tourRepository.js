@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { TourModel, Tour } = require('../models/tour');
 
 class TourRepository {

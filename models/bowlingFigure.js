@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 
-const { CounterModel } = require('./counter');
 const { dateTimeSchema } = require('./schemaExtensions');
 
 const bowlingFigureSchema = new mongoose.Schema({
-    _id: { type: Number },
-    playerId: { type: Number, required: true },
-    teamId: { type: Number, required: true },
-    matchId: { type: Number, required: true },
+    playerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
+    teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
+    matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
     balls: { type: Number, required: true },
     maidens: { type: Number, required: true },
     runs: { type: Number, required: true },
@@ -17,25 +15,9 @@ const bowlingFigureSchema = new mongoose.Schema({
     gameType: { type: Object, required: true },
     teamType: { type: Object, require: true },
     matchStartTime: dateTimeSchema,
-    matchStadiumId: { type: Number, required: true },
+    matchStadiumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stadium', required: true },
     opposingTeam: { type: Object, required: true }
 }, { collection: 'bowlingFigures' });
-
-bowlingFigureSchema.pre('save', async function (next) {
-    const bowlingFigure = this;
-    try {
-        const counter = await CounterModel.findByIdAndUpdate(
-            'bowlingFigures',
-            { $inc: { sequenceValue: 1 } },
-            { new: true, upsert: true }
-        );
-        bowlingFigure._id = counter.sequenceValue;
-        next();
-    } catch (error) {
-        console.error('Failed to generate bowling figure ID:', error);
-        throw error;
-    }
-});
 
 const BowlingFigureModel = mongoose.model('BowlingFigure', bowlingFigureSchema);
 

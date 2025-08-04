@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { MatchModel, Match } = require('../models/match');
 
 class MatchRepository {

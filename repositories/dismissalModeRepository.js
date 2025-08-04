@@ -1,4 +1,4 @@
-const connectDatabase = require('../config/database');
+const { connectDatabase } = require('../config/database');
 const { DismissalModeModel } = require('../models/dismissalMode');
 
 class DismissalModeRepository {
