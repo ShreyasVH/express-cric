@@ -19,6 +19,7 @@ const ManOfTheMatchService = require('../services/manOfTheMatchService');
 const CaptainService = require('../services/captainService');
 const WicketKeeperService = require('../services/wicketKeeperService');
 const GameTypeService = require('../services/gameTypeService');
+const TotalsService = require('../services/totalsService');
 
 const TeamResponse = require('../responses/teamResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -57,6 +58,7 @@ const manOfTheMatchService = new ManOfTheMatchService();
 const captainService = new CaptainService();
 const wicketKeeperService = new WicketKeeperService();
 const gameTypeService = new GameTypeService();
+const totalsService = new TotalsService();
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -223,6 +225,7 @@ const create = asyncHandler(async (req, res, next) => {
         await manOfTheMatchService.add(match.id, createRequest.manOfTheMatchList, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session);
         await captainService.add(match.id, createRequest.captains, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session);
         await wicketKeeperService.add(match.id, createRequest.wicketKeepers, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session)
+        await totalsService.add(match.id, createRequest.totals, session);
 
         await session.commitTransaction();
         await session.endSession();

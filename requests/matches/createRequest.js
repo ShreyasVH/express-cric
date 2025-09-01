@@ -1,5 +1,3 @@
-const BadRequestException = require('../../exceptions/badRequestException');
-
 class CreateRequest {
     constructor(requestBody) {
         this.seriesId = requestBody.seriesId;
@@ -23,6 +21,7 @@ class CreateRequest {
         this.manOfTheMatchList = requestBody.manOfTheMatchList;
         this.captains = requestBody.captains;
         this.wicketKeepers = requestBody.wicketKeepers;
+        this.totals = requestBody.totals;
     }
 
     validate () {
