@@ -8,6 +8,7 @@ class SeriesDetailedResponse {
         this.type = new SeriesTypeResponse(seriesType);
         this.gameType = new GameTypeResponse(gameType);
         this.startTime = series.startTime;
+        this.tags = series.tags;
         this.teams = teams;
         this.matches = matches;
     }
