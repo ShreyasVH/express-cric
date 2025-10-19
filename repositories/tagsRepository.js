@@ -11,6 +11,11 @@ class CountryRepository {
     async getTotalCount() {
         return TagModel.countDocuments();
     }
+
+    async findByIds (ids) {
+        await connectDatabase();
+        return TagModel.find({ _id: { $in: ids } });
+    }
 }
 
 module.exports = CountryRepository;

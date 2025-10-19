@@ -15,6 +15,7 @@ const MatchService = require('../services/matchService');
 const ResultTypeService = require('../services/resultTypeService');
 const WinMarginTypeService = require('../services/winMarginTypeService');
 const StadiumService = require('../services/stadiumService');
+const TagsService = require('../services/tagsService');
 const TeamResponse = require('../responses/teamResponse');
 const SeriesResponse = require('../responses/seriesResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -27,6 +28,7 @@ const SeriesDetailedResponse = require('../responses/seriesDetailedResponse');
 const StadiumResponse = require('../responses/stadiumResponse');
 const MatchMiniResponse = require('../responses/matchMiniResponse');
 const PaginatedResponse = require('../responses/paginatedResponse');
+const TagResponse = require('../responses/tagResponse');
 const NotFoundException = require('../exceptions/notFoundException');
 const ConflictException = require('../exceptions/conflictException');
 const mongoose = require('mongoose');
@@ -45,6 +47,7 @@ const matchService = new MatchService();
 const resultTypeService = new ResultTypeService();
 const winMarginTypeService = new WinMarginTypeService();
 const stadiumService = new StadiumService();
+const tagsService = new TagsService();
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -53,6 +56,12 @@ const create = asyncHandler(async (req, res, next) => {
     if (teams.length !== createRequest.teams.filter((teamId, index, t) => t.indexOf(teamId) === index).length) {
         throw new NotFoundException('Team');
     }
+
+    const tags = await tagsService.findByIds(createRequest.tags);
+    if (tags.length !== createRequest.tags.filter((tagId, index, t) => t.indexOf(tagId) === index).length) {
+        throw new NotFoundException('Tag');
+    }
+    const tagResponses = tags.map(t => new TagResponse(t));
 
     const teamTypeIds = [];
     let countryIds = [];
@@ -106,7 +115,7 @@ const create = asyncHandler(async (req, res, next) => {
 
     let series;
     try {
-        series = await seriesService.create(createRequest, session);
+        series = await seriesService.create(createRequest, tagResponses, session);
         await seriesTeamsMapService.create(series._id, createRequest.teams, session);
         await manOfTheSeriesService.add(series._id, manOfTheSeriesToAdd, session);
 

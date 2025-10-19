@@ -3,10 +3,10 @@ const mongoose = require('mongoose');
 const { SeriesModel, Series } = require('../models/series');
 
 class SeriesRepository {
-    async create (createRequest, session) {
+    async create (createRequest, tags, session) {
         await connectDatabase();
 
-        const series = new Series(createRequest)
+        const series = new Series(createRequest, tags)
 
         const seriesModel = new SeriesModel(series);
 
