@@ -6,7 +6,7 @@ class SeriesService {
         this.seriesRepository = new SeriesRepository();
     }
 
-    async create(createRequest, session) {
+    async create(createRequest, tags, session) {
         createRequest.validate();
 
         const existingSeries = await this.seriesRepository.findByNameAndTourIdAndGameTypeId(createRequest.name, createRequest.tourId, createRequest.gameTypeId);
@@ -14,7 +14,7 @@ class SeriesService {
             throw new ConflictException('Series');
         }
 
-        return await this.seriesRepository.create(createRequest, session);
+        return await this.seriesRepository.create(createRequest, tags, session);
     }
 
     async getAll(page, limit) {

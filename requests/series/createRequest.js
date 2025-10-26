@@ -10,6 +10,7 @@ class CreateRequest {
         this.startTime = requestBody.startTime;
         this.teams = requestBody.teams;
         this.manOfTheSeriesList = requestBody.manOfTheSeriesList;
+        this.tags = requestBody.tags;
     }
 
     validate () {
