@@ -8,6 +8,10 @@ class TotalsService {
     async add(matchId, totalRequestEntries, session) {
         return this.totalsRepository.add(matchId, totalRequestEntries, session);
     }
+
+    async remove (matchId) {
+        await this.totalsRepository.remove(matchId);
+    }
 }
 
 module.exports = TotalsService;
