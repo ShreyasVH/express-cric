@@ -11,6 +11,12 @@ class MatchPlayerMapRepository {
             await totalModel.save({ session });
         }
     }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await TotalModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = MatchPlayerMapRepository;
