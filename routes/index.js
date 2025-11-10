@@ -8,6 +8,7 @@ const player = require('../controllers/player')
 const series = require('../controllers/series')
 const match = require('../controllers/match')
 const tag = require('../controllers/tag')
+const stats = require('../controllers/stats')
 
 const router = express.Router()
 
@@ -44,5 +45,7 @@ router.get('/cric/v1/matches/:id', match.get)
 router.delete('/cric/v1/matches/:id', match.remove)
 
 router.get('/cric/v1/tags', tag.getAll)
+
+router.post('/cric/v1/stats', stats.getStats)
 
 module.exports = router
