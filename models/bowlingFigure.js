@@ -4,6 +4,7 @@ const { dateTimeSchema } = require('./schemaExtensions');
 
 const bowlingFigureSchema = new mongoose.Schema({
     playerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
+    playerName: { type: String, required: true },
     teamId: { type: mongoose.Schema.Types.ObjectId, ref: 'Team', required: true },
     matchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Match', required: true },
     balls: { type: Number, required: true },
@@ -22,8 +23,9 @@ const bowlingFigureSchema = new mongoose.Schema({
 const BowlingFigureModel = mongoose.model('BowlingFigure', bowlingFigureSchema);
 
 class BowlingFigure {
-    constructor(createRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap) {
+    constructor(createRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap) {
         this.playerId = createRequest.playerId;
+        this.playerName = playerMap[createRequest.playerId].name;
         const bowlerTeamId = playerTeamMap[createRequest.playerId];
         this.teamId = bowlerTeamId
         const opposingTeamId = Object.keys(teamMap).filter(teamId => teamId !== bowlerTeamId)[0];

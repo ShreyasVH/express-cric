@@ -188,7 +188,7 @@ const create = asyncHandler(async (req, res, next) => {
             return new BattingScoreResponse(battingScore, new PlayerMiniResponse(batsmanPlayer, new CountryResponse(countryMap[batsmanPlayer.countryId])), battingScore.dismissalMode, bowler, fielders);
         });
 
-        const bowlingFigures = await bowlingFigureService.add(createRequest.bowlingFigures, playerTeamMap, match, gameTypeResponse, teamMap, teamTypeMap, session);
+        const bowlingFigures = await bowlingFigureService.add(createRequest.bowlingFigures, playerTeamMap, match, gameTypeResponse, teamMap, teamTypeMap, playerMap, session);
         bowlingFigureResponses = bowlingFigures.map(bowlingFigure => {
             const bowlerPlayer = playerMap[bowlingFigure.playerId];
 

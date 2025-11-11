@@ -11,6 +11,8 @@ class StatsService {
 
         if ('batting' === filterRequest.type) {
             statsResponse = await this.playerRepository.getBattingStats(filterRequest);
+        } else if ('bowling' === filterRequest.type) {
+            statsResponse = await this.playerRepository.getBowlingStats(filterRequest);
         }
         return statsResponse;
     }

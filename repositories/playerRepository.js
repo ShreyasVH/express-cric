@@ -1,7 +1,8 @@
 const { connectDatabase, getObjectId } = require('../config/database');
 const { PlayerModel, Player } = require('../models/player');
 const StatsResponse = require('../responses/statsResponse');
-const { BattingScoreModel, BattingScore } = require('../models/battingScore');
+const { BattingScoreModel } = require('../models/battingScore');
+const { BowlingFigureModel } = require('../models/bowlingFigure');
 
 class PlayerRepository {
     async create (createRequest) {
@@ -188,6 +189,22 @@ class PlayerRepository {
                 fieldName = 'sixes';
                 break;
             }
+            case 'wickets': {
+                fieldName = 'wickets';
+                break;
+            }
+            case 'maidens': {
+                fieldName = 'maidens';
+                break;
+            }
+            case 'fifers': {
+                fieldName = 'fifers';
+                break;
+            }
+            case 'tenWickets': {
+                fieldName = 'tenWickets';
+                break;
+            }
         }
 
         return fieldName;
@@ -306,6 +323,117 @@ class PlayerRepository {
             highest: r.highest.toString(),
             fifties: r.fifties.toString(),
             hundreds: r.hundreds.toString()
+        }));
+
+        return statsResponse;
+    }
+
+    async getBowlingStats(filterRequest) {
+        await connectDatabase();
+
+        const statsResponse = new StatsResponse();
+
+        const countQuery = [];
+        const query = [];
+
+        const whereQueryParts = {};
+
+        for (const [field, valueList] of Object.entries(filterRequest.filters)) {
+            const fieldNameWithTablePrefix = this.getFieldNameWithTablePrefix(field);
+            if (fieldNameWithTablePrefix.length && valueList.length > 0) {
+                whereQueryParts[fieldNameWithTablePrefix] = {
+                    $in: this.formatValues(field, valueList)
+                }
+            }
+        }
+
+        for (const [field, rangeValues] of Object.entries(filterRequest.rangeFilters)) {
+            const fieldNameWithTablePrefix = this.getFieldNameWithTablePrefix(field);
+            if (fieldNameWithTablePrefix.length && Object.keys(rangeValues).length > 0) {
+                whereQueryParts[fieldNameWithTablePrefix] = {};
+
+                if (rangeValues.hasOwnProperty('from')) {
+                    whereQueryParts[fieldNameWithTablePrefix]['$gte'] = this.formatValue(field, rangeValues['from'], 'from');
+                }
+
+                if (rangeValues.hasOwnProperty('to')) {
+                    whereQueryParts[fieldNameWithTablePrefix]['$lte'] = this.formatValue(field, rangeValues['to'], 'to');
+                }
+            }
+        }
+
+
+        if (Object.keys(whereQueryParts).length > 0) {
+            countQuery.push({
+                $match: whereQueryParts
+            });
+
+            query.push({
+                $match: whereQueryParts
+            });
+        }
+
+        countQuery.push({
+            $group: {
+                _id: "$playerId"
+            }
+        });
+
+        query.push({
+            $group: {
+                _id: "$playerId",
+                name: { $first: "$playerName" },
+                innings: { $sum: 1 },
+                wickets: { $sum: '$wickets' },
+                runs: { $sum: '$runs' },
+                balls: { $sum: '$balls' },
+                maidens: { $sum: '$maidens' },
+                fifers: { $sum: { $cond: [{ $and: [{ $gte: ['$wickets', 5] }, { $lt: ['$wickets', 10] }] }, 1, 0] } },
+                tenWickets: { $sum: { $cond: [{ $gte: ['$wickets', 10] }, 1, 0] } }
+            }
+        })
+
+        countQuery.push({
+            $count: 'count'
+        });
+
+        const sortMap = {};
+        for (const [field, sortKey] of Object.entries(filterRequest.sortMap)) {
+            const sortFieldName = this.getFieldNameForDisplay(field);
+            if (sortFieldName) {
+                sortMap[sortFieldName] = this.getValueForSortKey(sortKey);
+            }
+        }
+        if (Object.keys(sortMap).length === 0) {
+            sortMap[this.getFieldNameForDisplay('runs')] = this.getValueForSortKey('desc');
+        }
+
+        query.push({
+            $sort: sortMap
+        });
+
+        query.push({
+            $skip: filterRequest.offset
+        });
+
+        query.push({
+            $limit: Math.min(30, filterRequest.count)
+        });
+
+        const countResult = await BowlingFigureModel.aggregate(countQuery);
+        statsResponse.count = countResult[0].count;
+
+        const result = await BowlingFigureModel.aggregate(query);
+        statsResponse.stats = result.map(r => ({
+            id: r._id,
+            name: r.name,
+            innings: r.innings.toString(),
+            wickets: r.wickets.toString(),
+            runs: r.runs.toString(),
+            balls: r.balls.toString(),
+            maidens: r.maidens.toString(),
+            fifers: r.fifers.toString(),
+            tenWickets: r.tenWickets.toString()
         }));
 
         return statsResponse;
