@@ -1,5 +1,7 @@
-const { connectDatabase } = require('../config/database');
+const { connectDatabase, getObjectId } = require('../config/database');
 const { PlayerModel, Player } = require('../models/player');
+const StatsResponse = require('../responses/statsResponse');
+const { BattingScoreModel, BattingScore } = require('../models/battingScore');
 
 class PlayerRepository {
     async create (createRequest) {
@@ -57,6 +59,256 @@ class PlayerRepository {
         return PlayerModel.countDocuments({
             name: { $regex: keyword, $options: "i" }
         });
+    }
+
+    getFieldNameWithTablePrefix = field => {
+        let fieldName = '';
+
+        switch (field) {
+            case 'gameType': {
+                fieldName = 'gameType.id';
+                break;
+            }
+            case 'stadium': {
+                fieldName = 'matchStadiumId';
+                break;
+            }
+            case 'team': {
+                fieldName = 'batsman.teamId';
+                break;
+            }
+            case 'opposingTeam': {
+                fieldName = 'opposingTeam.id';
+                break;
+            }
+            case 'teamType': {
+                fieldName = 'teamType._id';
+                break;
+            }
+            case 'country': {
+                fieldName = '';
+                break;
+            }
+            case 'series': {
+                fieldName = '';
+                break;
+            }
+            case 'year': {
+                fieldName = 'matchStartTime';
+                break;
+            }
+        }
+
+        return fieldName;
+    }
+
+    formatValue = (field, value, key) => {
+        let formattedValue = value;
+
+        switch (field) {
+            case 'gameType':
+            case 'teamType':
+            {
+                formattedValue = parseInt(value);
+                break;
+            }
+            case 'opposingTeam':
+            case 'stadium':
+            {
+                formattedValue = getObjectId(value);
+                break;
+            }
+            case 'year': {
+                formattedValue = new Date(`${((key === 'from') ? value : parseInt(value) + 1 )}-01-01`);
+                break;
+            }
+        }
+
+        return formattedValue;
+    }
+
+    formatValues = (field, valueList) => {
+        return valueList.map(v => this.formatValue(field, v));
+    }
+
+    getValueForSortKey = sortKey => {
+        let value = 1;
+
+        switch (sortKey.toLowerCase()) {
+            case 'asc': {
+                value = 1;
+                break;
+            }
+            case 'desc': {
+                value = -1;
+                break;
+            }
+        }
+
+        return value;
+    }
+
+    getFieldNameForDisplay = field => {
+        let fieldName = '';
+
+        switch (field) {
+            case 'runs': {
+                fieldName = 'runs';
+                break;
+            }
+            case 'balls': {
+                fieldName = 'balls';
+                break;
+            }
+            case 'innings': {
+                fieldName = 'innings';
+                break;
+            }
+            case 'notOuts': {
+                fieldName = 'notOuts';
+                break;
+            }
+            case 'fifties': {
+                fieldName = 'fifties';
+                break;
+            }
+            case 'hundreds': {
+                fieldName = 'hundreds';
+                break;
+            }
+            case 'highest': {
+                fieldName = 'highest';
+                break;
+            }
+            case 'fours': {
+                fieldName = 'fours';
+                break;
+            }
+            case 'sixes': {
+                fieldName = 'sixes';
+                break;
+            }
+        }
+
+        return fieldName;
+    }
+
+    async getBattingStats(filterRequest) {
+        await connectDatabase();
+
+        const statsResponse = new StatsResponse();
+
+        const countQuery = [];
+        const query = [];
+
+
+
+        const whereQueryParts = {};
+
+        for (const [field, valueList] of Object.entries(filterRequest.filters)) {
+            const fieldNameWithTablePrefix = this.getFieldNameWithTablePrefix(field);
+            if (fieldNameWithTablePrefix.length && valueList.length > 0) {
+                whereQueryParts[fieldNameWithTablePrefix] = {
+                    $in: this.formatValues(field, valueList)
+                }
+            }
+        }
+
+        for (const [field, rangeValues] of Object.entries(filterRequest.rangeFilters)) {
+            const fieldNameWithTablePrefix = this.getFieldNameWithTablePrefix(field);
+            if (fieldNameWithTablePrefix.length && Object.keys(rangeValues).length > 0) {
+                whereQueryParts[fieldNameWithTablePrefix] = {};
+
+                if (rangeValues.hasOwnProperty('from')) {
+                    whereQueryParts[fieldNameWithTablePrefix]['$gte'] = this.formatValue(field, rangeValues['from'], 'from');
+                }
+
+                if (rangeValues.hasOwnProperty('to')) {
+                    whereQueryParts[fieldNameWithTablePrefix]['$lte'] = this.formatValue(field, rangeValues['to'], 'to');
+                }
+            }
+        }
+
+
+        if (Object.keys(whereQueryParts).length > 0) {
+            countQuery.push({
+                $match: whereQueryParts
+            });
+
+            query.push({
+                $match: whereQueryParts
+            });
+        }
+
+        countQuery.push({
+            $group: {
+                _id: "$batsman.playerId"
+            }
+        });
+
+        query.push({
+            $group: {
+                _id: "$batsman.playerId",
+                name: { $first: "$batsman.playerName" },
+                innings: { $sum: 1 },
+                runs: { $sum: '$runs' },
+                balls: { $sum: '$balls' },
+                notOuts: { $sum: { $cond: [ { $eq: [ { $type: "$dismissalMode" }, "missing"] }, 1, 0 ] }},
+                fours: { $sum: '$fours' },
+                sixes: { $sum: '$sixes' },
+                highest: { $max: '$runs' },
+                fifties: { $sum: { $cond: [{ $and: [{ $gte: ['$runs', 50] }, { $lt: ['$runs', 100] }] }, 1, 0] } },
+                hundreds: { $sum: { $cond: [{ $gte: ['$runs', 100] }, 1, 0] } }
+            }
+        })
+
+        countQuery.push({
+            $count: 'count'
+        });
+
+        const sortMap = {};
+        for (const [field, sortKey] of Object.entries(filterRequest.sortMap)) {
+            const sortFieldName = this.getFieldNameForDisplay(field);
+            if (sortFieldName) {
+                sortMap[sortFieldName] = this.getValueForSortKey(sortKey);
+            }
+        }
+        if (Object.keys(sortMap).length === 0) {
+            sortMap[this.getFieldNameForDisplay('runs')] = this.getValueForSortKey('desc');
+        }
+
+        query.push({
+            $sort: sortMap
+        });
+
+        query.push({
+            $skip: filterRequest.offset
+        });
+
+        query.push({
+           $limit: Math.min(30, filterRequest.count)
+        });
+
+
+        const countResult = await BattingScoreModel.aggregate(countQuery);
+        statsResponse.count = countResult[0].count;
+
+        const result = await BattingScoreModel.aggregate(query);
+        statsResponse.stats = result.map(r => ({
+            id: r._id,
+            name: r.name,
+            innings: r.innings.toString(),
+            runs: r.runs.toString(),
+            balls: r.balls.toString(),
+            notOuts: r.notOuts.toString(),
+            fours: r.fours.toString(),
+            sixes: r.sixes.toString(),
+            highest: r.highest.toString(),
+            fifties: r.fifties.toString(),
+            hundreds: r.hundreds.toString()
+        }));
+
+        return statsResponse;
     }
 }
 

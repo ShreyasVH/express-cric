@@ -167,7 +167,7 @@ const create = asyncHandler(async (req, res, next) => {
             return map;
         }, {});
 
-        const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, gameTypeResponse, teamMap, teamTypeMap, session);
+        const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, gameTypeResponse, teamMap, teamTypeMap, playerMap, session);
         battingScoreResponses = battingScores.map(battingScore => {
             let bowler = null;
             if (battingScore.bowler) {

@@ -1,7 +1,7 @@
 class StatsResponse {
-    constructor(count, stats) {
-        this.count = count;
-        this.stats = stats;
+    constructor() {
+        this.count = 0;
+        this.stats = [];
     }
 }
 
