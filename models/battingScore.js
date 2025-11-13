@@ -26,7 +26,7 @@ const battingScoreSchema = new mongoose.Schema({
 const BattingScoreModel = mongoose.model('BattingScore', battingScoreSchema);
 
 class BattingScore {
-    constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap) {
+    constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers) {
         const batsmanTeamId = playerTeamMap[createRequest.playerId];
         const opposingTeamId = Object.keys(teamMap).filter(teamId => teamId !== batsmanTeamId)[0];
         this.batsman = {
@@ -51,7 +51,9 @@ class BattingScore {
         if (createRequest.fielderIds) {
             this.fielders = createRequest.fielderIds.map(playerId => ({
                 playerId: playerId,
-                teamId: playerTeamMap[playerId]
+                teamId: playerTeamMap[playerId],
+                playerName: playerMap[playerId].name,
+                wicketKeeper: wicketKeepers.includes(playerId)
             }));
         }
         this.innings = createRequest.innings;

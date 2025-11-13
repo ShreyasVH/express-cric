@@ -205,6 +205,22 @@ class PlayerRepository {
                 fieldName = 'tenWickets';
                 break;
             }
+            case 'fielderCatches': {
+                fieldName = 'fielderCatches';
+                break;
+            }
+            case 'keeperCatches': {
+                fieldName = 'keeperCatches';
+                break;
+            }
+            case 'stumpings': {
+                fieldName = 'stumpings';
+                break;
+            }
+            case 'runOuts': {
+                fieldName = 'runOuts';
+                break;
+            }
         }
 
         return fieldName;
@@ -434,6 +450,208 @@ class PlayerRepository {
             maidens: r.maidens.toString(),
             fifers: r.fifers.toString(),
             tenWickets: r.tenWickets.toString()
+        }));
+
+        return statsResponse;
+    }
+
+    async getFieldingStats(filterRequest) {
+        await connectDatabase();
+
+        const statsResponse = new StatsResponse();
+
+        const countQuery = [];
+        const query = [];
+
+        const whereQueryParts = {};
+
+        for (const [field, valueList] of Object.entries(filterRequest.filters)) {
+            const fieldNameWithTablePrefix = this.getFieldNameWithTablePrefix(field);
+            if (fieldNameWithTablePrefix.length && valueList.length > 0) {
+                whereQueryParts[fieldNameWithTablePrefix] = {
+                    $in: this.formatValues(field, valueList)
+                }
+            }
+        }
+
+        for (const [field, rangeValues] of Object.entries(filterRequest.rangeFilters)) {
+            const fieldNameWithTablePrefix = this.getFieldNameWithTablePrefix(field);
+            if (fieldNameWithTablePrefix.length && Object.keys(rangeValues).length > 0) {
+                whereQueryParts[fieldNameWithTablePrefix] = {};
+
+                if (rangeValues.hasOwnProperty('from')) {
+                    whereQueryParts[fieldNameWithTablePrefix]['$gte'] = this.formatValue(field, rangeValues['from'], 'from');
+                }
+
+                if (rangeValues.hasOwnProperty('to')) {
+                    whereQueryParts[fieldNameWithTablePrefix]['$lte'] = this.formatValue(field, rangeValues['to'], 'to');
+                }
+            }
+        }
+
+
+        if (Object.keys(whereQueryParts).length > 0) {
+            countQuery.push({
+                $match: whereQueryParts
+            });
+
+            query.push({
+                $match: whereQueryParts
+            });
+        }
+
+        countQuery.push({
+            $unwind: {
+                path: "$fielders",
+                preserveNullAndEmptyArrays: false
+            }
+        });
+
+        query.push({
+            $unwind: {
+                path: "$fielders",
+                preserveNullAndEmptyArrays: false
+            }
+        });
+
+        countQuery.push({
+            $match: {
+                "fielders.playerName": {
+                    $ne: "sub"
+                }
+            }
+        });
+
+        query.push({
+            $match: {
+                "fielders.playerName": {
+                    $ne: "sub"
+                }
+            }
+        });
+
+        countQuery.push({
+            $group: {
+                _id: "$fielders.playerId"
+            }
+        });
+
+        query.push({
+            $group: {
+                _id: "$fielders.playerId",
+                name: { $first: "$fielders.playerName" },
+                fielderCatches: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $and: [
+                                    {
+                                        $eq: [
+                                            "$dismissalMode.name",
+                                            "Caught"
+                                        ]
+                                    },
+                                    {
+                                        $eq: [
+                                            "$fielders.wicketKeeper",
+                                            false
+                                        ]
+                                    }
+                                ]
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                },
+                keeperCatches: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $and: [
+                                    {
+                                        $eq: [
+                                            "$dismissalMode.name",
+                                            "Caught"
+                                        ]
+                                    },
+                                    {
+                                        $eq: [
+                                            "$fielders.wicketKeeper",
+                                            true
+                                        ]
+                                    }
+                                ]
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                },
+                stumpings: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $eq: ["$dismissalMode.name", "Stumped"]
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                },
+                runOuts: {
+                    $sum: {
+                        $cond: [
+                            {
+                                $eq: ["$dismissalMode.name", "Run Out"]
+                            },
+                            1,
+                            0
+                        ]
+                    }
+                }
+            }
+        })
+
+        countQuery.push({
+            $count: 'count'
+        });
+
+        const sortMap = {};
+        for (const [field, sortKey] of Object.entries(filterRequest.sortMap)) {
+            const sortFieldName = this.getFieldNameForDisplay(field);
+            if (sortFieldName) {
+                sortMap[sortFieldName] = this.getValueForSortKey(sortKey);
+            }
+        }
+        if (Object.keys(sortMap).length === 0) {
+            sortMap[this.getFieldNameForDisplay('fielderCatches')] = this.getValueForSortKey('desc');
+        }
+
+        query.push({
+            $sort: sortMap
+        });
+
+        query.push({
+            $skip: filterRequest.offset
+        });
+
+        query.push({
+            $limit: Math.min(30, filterRequest.count)
+        });
+
+
+        const countResult = await BattingScoreModel.aggregate(countQuery);
+        statsResponse.count = countResult[0].count;
+
+        const result = await BattingScoreModel.aggregate(query);
+        statsResponse.stats = result.map(r => ({
+            id: r._id,
+            name: r.name,
+            fielderCatches: r.fielderCatches.toString(),
+            keeperCatches: r.keeperCatches.toString(),
+            stumpings: r.stumpings.toString(),
+            runOuts: r.runOuts.toString()
         }));
 
         return statsResponse;

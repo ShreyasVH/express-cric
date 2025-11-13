@@ -13,6 +13,8 @@ class StatsService {
             statsResponse = await this.playerRepository.getBattingStats(filterRequest);
         } else if ('bowling' === filterRequest.type) {
             statsResponse = await this.playerRepository.getBowlingStats(filterRequest);
+        } else if ('fielding' === filterRequest.type) {
+            statsResponse = await this.playerRepository.getFieldingStats(filterRequest);
         }
         return statsResponse;
     }
