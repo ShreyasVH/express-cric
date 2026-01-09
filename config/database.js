@@ -9,8 +9,6 @@ async function connectDatabase() {
 
   try {
     await mongoose.connect('mongodb://' + process.env.MONGODB_IP + ':' + process.env.MONGODB_PORT + '/' + process.env.MONGODB_DB, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
       maxPoolSize: 25,
       serverSelectionTimeoutMS: 3000,
       socketTimeoutMS: 30000,

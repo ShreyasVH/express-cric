@@ -2,15 +2,11 @@
 
 const config = {
   mongodb: {
-    // TODO Change (or review) the url to your MongoDB:
     url: 'mongodb://' + process.env.MONGODB_IP + ':' + process.env.MONGODB_PORT,
 
-    // TODO Change this to your database name:
     databaseName: process.env.MONGODB_DB,
 
     options: {
-      useNewUrlParser: true, // removes a deprecation warning when connecting
-      useUnifiedTopology: true, // removes a deprecating warning when connecting
       //   connectTimeoutMS: 3600000, // increase connection timeout to 1 hour
       //   socketTimeoutMS: 3600000, // increase socket timeout to 1 hour
     }
