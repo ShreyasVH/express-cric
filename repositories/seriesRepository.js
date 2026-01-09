@@ -10,7 +10,7 @@ class SeriesRepository {
 
         const seriesModel = new SeriesModel(series);
 
-        return await seriesModel.save({ session });
+        return await seriesModel.save({ session, ordered: true });
     }
 
     async findByNameAndTourIdAndGameTypeId (name, tourId, gameTypeId) {
@@ -36,7 +36,7 @@ class SeriesRepository {
 
     async update (series, session) {
         await connectDatabase();
-        SeriesModel.updateOne({ _id: series._id }, series, { session });
+        SeriesModel.updateOne({ _id: series._id }, series, { session, ordered: true });
     }
 
     async getByTourId (tourId) {

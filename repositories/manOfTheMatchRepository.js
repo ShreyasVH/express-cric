@@ -10,7 +10,7 @@ class ManOfTheMatchRepository {
         for (const playerId of playerIds) {
             const manOfTheMatch = new ManOfTheMatch(matchId, playerId, teamMap[playerTeamMap[playerId]], gameType, teamTypeMap);
             const manOfTheMatchModel = new ManOfTheMatchModel(manOfTheMatch);
-            addedEntries.push(await manOfTheMatchModel.save({ session }));
+            addedEntries.push(await manOfTheMatchModel.save({ session, ordered: true }));
         }
 
         return addedEntries;

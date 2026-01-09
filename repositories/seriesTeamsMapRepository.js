@@ -6,7 +6,7 @@ class SeriesTeamsMapRepository {
         await connectDatabase();
 
         const seriesTeamsMaps = teamIds.map(teamId => new SeriesTeamsMap(seriesId, teamId));
-        return SeriesTeamsMapModel.create(seriesTeamsMaps, { session });
+        return SeriesTeamsMapModel.create(seriesTeamsMaps, { session, ordered: true });
     }
 
     async getBySeriesIds (seriesIds) {
@@ -20,7 +20,7 @@ class SeriesTeamsMapRepository {
 
         const seriesTeamsMaps = await SeriesTeamsMapModel.find({ seriesId: seriesId, teamId: { $in: teamIds } });
         const ids = seriesTeamsMaps.map(stm => stm._id);
-        SeriesTeamsMapModel.deleteMany({ _id: { $in: ids } }, { session });
+        SeriesTeamsMapModel.deleteMany({ _id: { $in: ids } }, { session, ordered: true });
     }
 
     async remove (seriesId) {

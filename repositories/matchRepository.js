@@ -9,7 +9,7 @@ class MatchRepository {
 
         const matchModel = new MatchModel(match);
 
-        return await matchModel.save({ session });
+        return await matchModel.save({ session, ordered: true });
     }
 
     async findByStadiumAndStartTime (stadiumId, startTime) {

@@ -10,7 +10,7 @@ class WicketKeeperRepository {
         for (const playerId of playerIds) {
             const wicketKeeper = new WicketKeeper(matchId, playerId, teamMap[playerTeamMap[playerId]], gameType, teamTypeMap);
             const wicketKeeperModel = new WicketKeeperModel(wicketKeeper);
-            addedEntries.push(await wicketKeeperModel.save({ session }));
+            addedEntries.push(await wicketKeeperModel.save({ session, ordered: true }));
         }
 
         return addedEntries;
