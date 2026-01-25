@@ -9,7 +9,7 @@ class BowlingFigureRepository {
         for (const bowlingFigureRequest of bowlingFigureRequests) {
             const bowlingFigure = new BowlingFigure(bowlingFigureRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap);
             const bowlingFigureModel = new BowlingFigureModel(bowlingFigure);
-            addedEntries.push(await bowlingFigureModel.save({ session }));
+            addedEntries.push(await bowlingFigureModel.save({ session, ordered: true }));
         }
 
         return addedEntries;

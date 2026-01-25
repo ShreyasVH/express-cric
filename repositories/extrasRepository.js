@@ -9,7 +9,7 @@ class ExtrasRepository {
         for (const extrasRequest of extrasRequests) {
             const extras = new Extras(matchId, extrasRequest);
             const extrasModel = new ExtrasModel(extras);
-            addedEntries.push(await extrasModel.save({ session }));
+            addedEntries.push(await extrasModel.save({ session, ordered: true }));
         }
 
         return addedEntries;

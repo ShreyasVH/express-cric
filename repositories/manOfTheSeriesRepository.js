@@ -8,7 +8,7 @@ class ManOfTheSeriesRepository {
         const manOfTheSeriesList = playerIds.map(playerId => new ManOfTheSeries(seriesId, playerId));
 
         if (manOfTheSeriesList.length > 0) {
-            await ManOfTheSeriesModel.create(manOfTheSeriesList, { session });
+            await ManOfTheSeriesModel.create(manOfTheSeriesList, { session, ordered: true });
         }
     }
 
@@ -24,7 +24,7 @@ class ManOfTheSeriesRepository {
         if (playerIds.length > 0) {
             const manOfTheSeriesList = await ManOfTheSeriesModel.find({ seriesId: seriesId, playerId: { $in: playerIds } });
             const ids = manOfTheSeriesList.map(mots => mots._id);
-            await ManOfTheSeriesModel.deleteMany({ _id: { $in: ids } }, { session });
+            await ManOfTheSeriesModel.deleteMany({ _id: { $in: ids } }, { session, ordered: true });
         }
     }
 

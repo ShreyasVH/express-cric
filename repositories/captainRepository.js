@@ -10,7 +10,7 @@ class CaptainRepository {
         for (const playerId of playerIds) {
             const captain = new Captain(matchId, playerId, teamMap[playerTeamMap[playerId]], gameType, teamTypeMap);
             const captainModel = new CaptainModel(captain);
-            addedEntries.push(await captainModel.save({ session }));
+            addedEntries.push(await captainModel.save({ session, ordered: true }));
         }
 
         return addedEntries;

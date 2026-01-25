@@ -8,7 +8,7 @@ class MatchPlayerMapRepository {
         for (const totalRequestEntry of totalRequestEntries) {
             const total = new Total(matchId, totalRequestEntry);
             const totalModel = new TotalModel(total);
-            await totalModel.save({ session });
+            await totalModel.save({ session, ordered: true });
         }
     }
 
