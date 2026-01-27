@@ -11,10 +11,10 @@ module.exports = {
             { _id: 16, name: 'QUALIFIER_2' }
         ]);
 
-        await db.collection('counters').insertOne({
-            _id: 'tags',
-            sequenceValue: 17
-        });
+        await db.collection('counters').updateOne(
+            { _id: 'tags' },
+            { $inc: { sequenceValue: 8 } }
+        );
     },
 
     async down(db, client) {
