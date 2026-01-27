@@ -20,6 +20,7 @@ const CaptainService = require('../services/captainService');
 const WicketKeeperService = require('../services/wicketKeeperService');
 const GameTypeService = require('../services/gameTypeService');
 const TotalsService = require('../services/totalsService');
+const TagsService = require('../services/tagsService');
 
 const TeamResponse = require('../responses/teamResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -35,6 +36,7 @@ const ExtrasResponse = require('../responses/extrasResponse');
 const ExtrasTypeResponse = require('../responses/extrasTypeResponse');
 const GameTypeResponse = require('../responses/gameTypeResponse');
 const DismissalModeResponse = require('../responses/dismissalModeResponse');
+const TagResponse = require('../responses/tagResponse');
 
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
@@ -59,6 +61,7 @@ const captainService = new CaptainService();
 const wicketKeeperService = new WicketKeeperService();
 const gameTypeService = new GameTypeService();
 const totalsService = new TotalsService();
+const tagsService = new TagsService();
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -147,6 +150,12 @@ const create = asyncHandler(async (req, res, next) => {
     const gameType = await gameTypeService.findById(series.gameTypeId);
     const gameTypeResponse = new GameTypeResponse(gameType);
 
+    const tags = await tagsService.findByIds(createRequest.tags);
+    if (tags.length !== createRequest.tags.filter((tagId, index, t) => t.indexOf(tagId) === index).length) {
+        throw new NotFoundException('Tag');
+    }
+    const tagResponses = tags.map(t => new TagResponse(t));
+
     const session = await mongoose.startSession();
     session.startTransaction();
 
@@ -155,7 +164,7 @@ const create = asyncHandler(async (req, res, next) => {
     let bowlingFigureResponses = [];
     let extrasResponses = [];
     try {
-        match = await matchService.create(createRequest, session);
+        match = await matchService.create(createRequest, tagResponses, session);
         const matchPlayerMapList = await matchPlayerMapService.add(match.id, allPlayerIds, playerTeamMap, session);
         const playerToMatchPlayerMap = matchPlayerMapList.reduce((map, current) => {
             map[current.playerId] = current.id;

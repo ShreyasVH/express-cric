@@ -6,7 +6,7 @@ class MatchService {
         this.matchRepository = new MatchRepository();
     }
 
-    async create(createRequest, session) {
+    async create(createRequest, tags, session) {
         createRequest.validate();
 
         const existingMatch = await this.matchRepository.findByStadiumAndStartTime(createRequest.stadiumId, createRequest.startTime);
@@ -14,7 +14,7 @@ class MatchService {
             throw new ConflictException('Match');
         }
 
-        return await this.matchRepository.create(createRequest, session);
+        return await this.matchRepository.create(createRequest, tags, session);
     }
 
     async findBySeriesId (seriesId) {

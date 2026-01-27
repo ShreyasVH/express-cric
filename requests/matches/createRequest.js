@@ -22,6 +22,7 @@ class CreateRequest {
         this.captains = requestBody.captains;
         this.wicketKeepers = requestBody.wicketKeepers;
         this.totals = requestBody.totals;
+        this.tags = requestBody.tags;
     }
 
     validate () {

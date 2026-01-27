@@ -2,10 +2,10 @@ const { connectDatabase } = require('../config/database');
 const { MatchModel, Match } = require('../models/match');
 
 class MatchRepository {
-    async create (createRequest, session) {
+    async create (createRequest, tags, session) {
         await connectDatabase();
 
-        const match = new Match(createRequest)
+        const match = new Match(createRequest, tags)
 
         const matchModel = new MatchModel(match);
 

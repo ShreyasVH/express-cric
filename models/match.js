@@ -14,13 +14,14 @@ const matchSchema = new mongoose.Schema({
     winMarginTypeId: { type: Number, required: false },
     stadiumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stadium', required: true },
     startTime: dateTimeSchema,
-    isOfficial: { type: Boolean, required: true }
+    isOfficial: { type: Boolean, required: true },
+    tags: {type: Array, required: false}
 },  { collection: 'matches' });
 
 const MatchModel = mongoose.model('Match', matchSchema);
 
 class Match {
-    constructor(createRequest) {
+    constructor(createRequest, tags) {
         this.seriesId = createRequest.seriesId;
         this.team1Id = createRequest.team1Id;
         this.team2Id = createRequest.team2Id;
@@ -33,6 +34,7 @@ class Match {
         this.stadiumId = createRequest.stadiumId;
         this.startTime = createRequest.startTime;
         this.isOfficial = createRequest.isOfficial;
+        this.tags = tags;
     }
 }
 
