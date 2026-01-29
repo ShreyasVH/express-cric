@@ -45,6 +45,7 @@ class MatchResponse {
         this.manOfTheMatchList = manOfTheMatchPlayerIds.map(playerId => playerMap[playerId]);
         this.captains = captainPlayerIds.map(playerId => playerMap[playerId]);
         this.wicketKeepers = wicketKeeperIds.map(playerId => playerMap[playerId]);
+        this.tags = match.tags;
     }
 }
 
