@@ -79,58 +79,58 @@ const getById = asyncHandler(async (req, res, next) => {
     const dismissalStats = await battingScoreService.getDismissalStats(id);
     playerResponse.dismissalStats = dismissalStats;
 
-    // const dismissalCountMap = {};
-    // for (const [gameType, gameTypeDismissalStats] of Object.entries(dismissalStats)) {
-    //     let dismissalCount = 0;
-    //     for (const [dismissalMode, count] of Object.entries(gameTypeDismissalStats)) {
-    //         dismissalCount += count;
-    //     }
-    //     dismissalCountMap[gameType] = dismissalCount;
-    // }
-    //
-    // const basicBattingStats = await battingScoreService.getBattingStats(id);
-    // if (Object.keys(basicBattingStats).length > 0) {
-    //     const battingStatsMap = {};
-    //
-    //     for (const [gameType, gameTypeBattingStats] of Object.entries(basicBattingStats)) {
-    //         const battingStats = new BattingStats(gameTypeBattingStats);
-    //         battingStats.notOuts = battingStats.innings - (dismissalCountMap[gameType] ?? 0);
-    //
-    //         if ((dismissalCountMap[gameType] ?? 0) > 0) {
-    //             battingStats.average = battingStats.runs / dismissalCountMap[gameType];
-    //         }
-    //
-    //         if (battingStats.balls > 0) {
-    //             battingStats.strikeRate = battingStats.runs * 100 / battingStats.balls;
-    //         }
-    //
-    //         battingStatsMap[gameType] = battingStats;
-    //     }
-    //
-    //     playerResponse.battingStats = battingStatsMap;
-    // }
-    //
-    // const basicBowlingStats = await bowlingFigureService.getBowlingStats(id);
-    // if (Object.keys(basicBowlingStats).length > 0) {
-    //     const bowlingStatsFinal = {};
-    //
-    //     for (const [gameType, gameTypeBowlingStats] of Object.entries(basicBowlingStats)) {
-    //         const bowlingStats = new BowlingStats(gameTypeBowlingStats);
-    //
-    //         if (bowlingStats.balls > 0) {
-    //             bowlingStats.economy = bowlingStats.runs * 6 / bowlingStats.balls;
-    //
-    //             if (bowlingStats.wickets > 0) {
-    //                 bowlingStats.average = bowlingStats.runs / bowlingStats.wickets;
-    //                 bowlingStats.strikeRate = bowlingStats.balls / bowlingStats.wickets;
-    //             }
-    //         }
-    //         bowlingStatsFinal[gameType] = bowlingStats;
-    //     }
-    //
-    //     playerResponse.bowlingStats = bowlingStatsFinal;
-    // }
-    //
+    const dismissalCountMap = {};
+    for (const [gameType, gameTypeDismissalStats] of Object.entries(dismissalStats)) {
+        let dismissalCount = 0;
+        for (const [dismissalMode, count] of Object.entries(gameTypeDismissalStats)) {
+            dismissalCount += count;
+        }
+        dismissalCountMap[gameType] = dismissalCount;
+    }
+
+    const basicBattingStats = await battingScoreService.getBattingStats(id);
+    if (Object.keys(basicBattingStats).length > 0) {
+        const battingStatsMap = {};
+
+        for (const [gameType, gameTypeBattingStats] of Object.entries(basicBattingStats)) {
+            const battingStats = new BattingStats(gameTypeBattingStats);
+            battingStats.notOuts = battingStats.innings - (dismissalCountMap[gameType] ?? 0);
+
+            if ((dismissalCountMap[gameType] ?? 0) > 0) {
+                battingStats.average = battingStats.runs / dismissalCountMap[gameType];
+            }
+
+            if (battingStats.balls > 0) {
+                battingStats.strikeRate = battingStats.runs * 100 / battingStats.balls;
+            }
+
+            battingStatsMap[gameType] = battingStats;
+        }
+
+        playerResponse.battingStats = battingStatsMap;
+    }
+
+    const basicBowlingStats = await bowlingFigureService.getBowlingStats(id);
+    if (Object.keys(basicBowlingStats).length > 0) {
+        const bowlingStatsFinal = {};
+
+        for (const [gameType, gameTypeBowlingStats] of Object.entries(basicBowlingStats)) {
+            const bowlingStats = new BowlingStats(gameTypeBowlingStats);
+
+            if (bowlingStats.balls > 0) {
+                bowlingStats.economy = bowlingStats.runs * 6 / bowlingStats.balls;
+
+                if (bowlingStats.wickets > 0) {
+                    bowlingStats.average = bowlingStats.runs / bowlingStats.wickets;
+                    bowlingStats.strikeRate = bowlingStats.balls / bowlingStats.wickets;
+                }
+            }
+            bowlingStatsFinal[gameType] = bowlingStats;
+        }
+
+        playerResponse.bowlingStats = bowlingStatsFinal;
+    }
+
     // const fieldingStatsMap = await battingScoreService.getFieldingStats(id);
     // if (Object.keys(fieldingStatsMap).length > 0) {
     //     const fieldingStatsMapFinal = {};
