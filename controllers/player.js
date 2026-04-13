@@ -131,16 +131,16 @@ const getById = asyncHandler(async (req, res, next) => {
         playerResponse.bowlingStats = bowlingStatsFinal;
     }
 
-    // const fieldingStatsMap = await battingScoreService.getFieldingStats(id);
-    // if (Object.keys(fieldingStatsMap).length > 0) {
-    //     const fieldingStatsMapFinal = {};
-    //
-    //     for (const [gameType, gameTypeFieldingStats] of Object.entries(fieldingStatsMap)) {
-    //         fieldingStatsMapFinal[gameType] = new FieldingStats(gameTypeFieldingStats);
-    //     }
-    //
-    //     playerResponse.fieldingStats = fieldingStatsMapFinal;
-    // }
+    const fieldingStatsMap = await battingScoreService.getFieldingStats(id);
+    if (Object.keys(fieldingStatsMap).length > 0) {
+        const fieldingStatsMapFinal = {};
+
+        for (const [gameType, gameTypeFieldingStats] of Object.entries(fieldingStatsMap)) {
+            fieldingStatsMapFinal[gameType] = new FieldingStats(gameTypeFieldingStats);
+        }
+
+        playerResponse.fieldingStats = fieldingStatsMapFinal;
+    }
 
     return ok(res, playerResponse);
 });
