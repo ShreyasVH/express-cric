@@ -1,4 +1,4 @@
-const TagsRepository = require('../repositories/TagsRepository');
+const TagsRepository = require('../repositories/tagsRepository');
 
 class TagsService {
     constructor() {
