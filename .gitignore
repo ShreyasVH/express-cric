@@ -4,3 +4,4 @@ node_modules
 npmInstall.log
 server.log
 migrations.log
+ncuLog.txt
