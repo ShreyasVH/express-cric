@@ -20,13 +20,14 @@ const battingScoreSchema = new mongoose.Schema({
     teamType: { type: Object, require: true },
     matchStartTime: dateTimeSchema,
     matchStadiumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stadium', required: true },
-    opposingTeam: { type: Object, required: true }
+    opposingTeam: { type: Object, required: true },
+    seriesTags: {type: Array, required: false}
 }, { collection: 'battingScores' });
 
 const BattingScoreModel = mongoose.model('BattingScore', battingScoreSchema);
 
 class BattingScore {
-    constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers) {
+    constructor(createRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags) {
         const batsmanTeamId = playerTeamMap[createRequest.playerId];
         const opposingTeamId = Object.keys(teamMap).filter(teamId => teamId !== batsmanTeamId)[0];
         this.batsman = {
@@ -68,6 +69,9 @@ class BattingScore {
             teamType: opposingTeam.typeId
         };
         this.matchStadiumId = match.stadiumId;
+        if (seriesTags.length > 0) {
+            this.seriesTags = seriesTags.map(t => ({ id: t.id, name: t.name }));
+        }
     }
 }
 

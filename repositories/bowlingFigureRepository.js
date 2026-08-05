@@ -2,12 +2,12 @@ const { connectDatabase, getObjectId } = require('../config/database');
 const { BowlingFigureModel, BowlingFigure } = require('../models/bowlingFigure');
 
 class BowlingFigureRepository {
-    async add (bowlingFigureRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, session) {
+    async add (bowlingFigureRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, session) {
         await connectDatabase();
 
         const addedEntries = [];
         for (const bowlingFigureRequest of bowlingFigureRequests) {
-            const bowlingFigure = new BowlingFigure(bowlingFigureRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap);
+            const bowlingFigure = new BowlingFigure(bowlingFigureRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags);
             const bowlingFigureModel = new BowlingFigureModel(bowlingFigure);
             addedEntries.push(await bowlingFigureModel.save({ session, ordered: true }));
         }
