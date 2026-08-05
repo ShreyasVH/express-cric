@@ -102,6 +102,10 @@ class PlayerRepository {
                 fieldName = 'seriesTags.id';
                 break;
             }
+            case 'matchTags': {
+                fieldName = 'matchTags.id';
+                break;
+            }
         }
 
         return fieldName;

@@ -179,7 +179,7 @@ const create = asyncHandler(async (req, res, next) => {
         const series = await seriesService.getById(match.seriesId);
         const seriesTags = series.tags;
 
-        const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, gameTypeResponse, teamMap, teamTypeMap, playerMap, createRequest.wicketKeepers, seriesTags, session);
+        const battingScores = await battingScoreService.add(createRequest.battingScores, playerTeamMap, dismissalModeMap, match, gameTypeResponse, teamMap, teamTypeMap, playerMap, createRequest.wicketKeepers, seriesTags, tagResponses, session);
         battingScoreResponses = battingScores.map(battingScore => {
             let bowler = null;
             if (battingScore.bowler) {
@@ -200,7 +200,7 @@ const create = asyncHandler(async (req, res, next) => {
             return new BattingScoreResponse(battingScore, new PlayerMiniResponse(batsmanPlayer, new CountryResponse(countryMap[batsmanPlayer.countryId])), battingScore.dismissalMode, bowler, fielders);
         });
 
-        const bowlingFigures = await bowlingFigureService.add(createRequest.bowlingFigures, playerTeamMap, match, gameTypeResponse, teamMap, teamTypeMap, playerMap, seriesTags, session);
+        const bowlingFigures = await bowlingFigureService.add(createRequest.bowlingFigures, playerTeamMap, match, gameTypeResponse, teamMap, teamTypeMap, playerMap, seriesTags, tagResponses, session);
         bowlingFigureResponses = bowlingFigures.map(bowlingFigure => {
             const bowlerPlayer = playerMap[bowlingFigure.playerId];
 
