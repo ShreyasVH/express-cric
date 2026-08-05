@@ -98,6 +98,10 @@ class PlayerRepository {
                 fieldName = 'matchStartTime';
                 break;
             }
+            case 'seriesTags': {
+                fieldName = 'seriesTags.id';
+                break;
+            }
         }
 
         return fieldName;
