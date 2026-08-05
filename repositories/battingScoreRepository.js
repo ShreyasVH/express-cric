@@ -2,12 +2,12 @@ const { connectDatabase } = require('../config/database');
 const { BattingScoreModel, BattingScore } = require('../models/battingScore');
 
 class BattingScoreRepository {
-    async add (battingScoreRequests, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, session) {
+    async add (battingScoreRequests, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, matchTags, session) {
         await connectDatabase();
 
         const addedEntries = [];
         for (const battingScoreRequest of battingScoreRequests) {
-            const battingScore = new BattingScore(battingScoreRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags);
+            const battingScore = new BattingScore(battingScoreRequest, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, matchTags);
             const battingScoreModel = new BattingScoreModel(battingScore);
             addedEntries.push(await battingScoreModel.save({ session, ordered: true }));
         }

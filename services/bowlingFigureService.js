@@ -5,8 +5,8 @@ class BowlingFigureService {
         this.bowlingFigureRepository = new BowlingFigureRepository();
     }
 
-    async add(bowlingFigureRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, session) {
-        return this.bowlingFigureRepository.add(bowlingFigureRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, session);
+    async add(bowlingFigureRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, matchTags, session) {
+        return this.bowlingFigureRepository.add(bowlingFigureRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, matchTags, session);
     }
 
     async getBowlingStats (playerId) {

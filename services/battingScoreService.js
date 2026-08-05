@@ -5,8 +5,8 @@ class BattingScoreService {
         this.battingScoreRepository = new BattingScoreRepository();
     }
 
-    async add(battingScoreRequests, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, session) {
-        return this.battingScoreRepository.add(battingScoreRequests, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, session);
+    async add(battingScoreRequests, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, matchTags, session) {
+        return this.battingScoreRepository.add(battingScoreRequests, playerTeamMap, dismissalModeMap, match, gameType, teamMap, teamTypeMap, playerMap, wicketKeepers, seriesTags, matchTags, session);
     }
 
     async getDismissalStats (playerId) {

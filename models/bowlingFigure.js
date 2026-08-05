@@ -18,13 +18,14 @@ const bowlingFigureSchema = new mongoose.Schema({
     matchStartTime: dateTimeSchema,
     matchStadiumId: { type: mongoose.Schema.Types.ObjectId, ref: 'Stadium', required: true },
     opposingTeam: { type: Object, required: true },
-    seriesTags: {type: Array, required: false}
+    seriesTags: {type: Array, required: false},
+    matchTags: {type: Array, required: false}
 }, { collection: 'bowlingFigures' });
 
 const BowlingFigureModel = mongoose.model('BowlingFigure', bowlingFigureSchema);
 
 class BowlingFigure {
-    constructor(createRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags) {
+    constructor(createRequest, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, matchTags) {
         this.playerId = createRequest.playerId;
         this.playerName = playerMap[createRequest.playerId].name;
         const bowlerTeamId = playerTeamMap[createRequest.playerId];
@@ -48,6 +49,9 @@ class BowlingFigure {
         this.matchStadiumId = match.stadiumId;
         if (seriesTags.length > 0) {
             this.seriesTags = seriesTags.map(t => ({ id: t.id, name: t.name }));
+        }
+        if (matchTags.length > 0) {
+            this.matchTags = matchTags.map(t => ({ id: t.id, name: t.name }));
         }
     }
 }
