@@ -42,6 +42,7 @@ const TagResponse = require('../responses/tagResponse');
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
 const partnershipRepository = require("./match");
+const PartnershipResponse = require("../responses/partnershipResponse");
 
 const matchService = new MatchService();
 const seriesService = new SeriesService();
@@ -165,6 +166,7 @@ const create = asyncHandler(async (req, res, next) => {
     let match;
     let battingScoreResponses = [];
     let bowlingFigureResponses = [];
+    let partnerships = [];
     let extrasResponses = [];
     try {
         match = await matchService.create(createRequest, tagResponses, session);
@@ -241,7 +243,7 @@ const create = asyncHandler(async (req, res, next) => {
         await captainService.add(match.id, createRequest.captains, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session);
         await wicketKeeperService.add(match.id, createRequest.wicketKeepers, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session)
         await totalsService.add(match.id, createRequest.totals, session);
-        const partnerships = await partnershipService.add(createRequest.partnerships, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, tagResponses, session);
+        partnerships = await partnershipService.add(createRequest.partnerships, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, tagResponses, session);
 
         await session.commitTransaction();
         await session.endSession();
@@ -264,6 +266,25 @@ const create = asyncHandler(async (req, res, next) => {
         teamPlayerMap[teamId].push(playerMiniResponse);
     }
 
+    const partnershipMap = partnerships.reduce((map, partnership) => {
+        const key = partnership.playerId1 + "_" + partnership.playerId2 + "_" + partnership.innings + "_" + partnership.wicket;
+        map[key] = partnership;
+
+        return map;
+    }, {});
+    console.log(partnershipMap);
+
+    const partnershipResponses = createRequest.partnerships.map(partnershipRequest => {
+        const key = partnershipRequest.playerId1 + "_" + partnershipRequest.playerId2 + "_" + partnershipRequest.innings + "_" + partnershipRequest.wicket;
+        console.log(key);
+        const partnership = partnershipMap[key];
+
+        const player1 = playerMap[partnershipRequest.playerId1];
+        const player2 = playerMap[partnershipRequest.playerId2];
+
+        return new PartnershipResponse(partnership, player1, player2);
+    });
+
     const matchResponse = new MatchResponse(
         match,
         series,
@@ -279,7 +300,8 @@ const create = asyncHandler(async (req, res, next) => {
         extrasResponses,
         createRequest.manOfTheMatchList,
         createRequest.captains,
-        createRequest.wicketKeepers
+        createRequest.wicketKeepers,
+        partnershipResponses
     );
 
     created(res, matchResponse);
@@ -445,6 +467,14 @@ const get = asyncHandler(async (req, res, next) => {
         );
     });
 
+    const partnerships = await partnershipService.getByMatchId(id);
+    const partnershipResponses = partnerships.map(partnership => {
+        const player1 = playerMap[partnership.playerId1];
+        const player2 = playerMap[partnership.playerId2];
+
+        return new PartnershipResponse(partnership, player1, player2);
+    });
+
     const matchResponse = new MatchResponse(
         match,
         series,
@@ -460,7 +490,8 @@ const get = asyncHandler(async (req, res, next) => {
         extrasResponses,
         manOfTheMatchList.map(motm => motm.playerId),
         captains.map(c => c.playerId),
-        wicketKeepers.map(wk => wk.playerId)
+        wicketKeepers.map(wk => wk.playerId),
+        partnershipResponses
     );
 
     ok(res, matchResponse);

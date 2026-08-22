@@ -18,23 +18,17 @@ class PartnershipRepository {
         return addedEntries;
     }
 
-    // async getByMatchId (matchId) {
-    //     await connectDatabase();
-    //
-    //     return BowlingFigureModel.find({ matchId: matchId });
-    // }
-    //
+    async getByMatchId (matchId) {
+        await connectDatabase();
+
+        return PartnershipModel.find({ matchId: getObjectId(matchId), primaryEntry: true });
+    }
+
     async remove (matchId) {
         await connectDatabase();
 
         await PartnershipModel.deleteMany({ matchId: matchId });
     }
-    //
-    // async merge (mergeRequest) {
-    //     await connectDatabase();
-    //
-    //     await BowlingFigureModel.updateMany({ 'playerId': mergeRequest.playerIdToMerge }, { "$set": { 'playerId': mergeRequest.originalPlayerId } });
-    // }
 }
 
 module.exports = PartnershipRepository;

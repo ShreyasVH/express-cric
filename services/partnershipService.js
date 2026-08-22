@@ -9,10 +9,10 @@ class PartnershipService {
         return this.partnershipRepository.add(partnershipRequests, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, matchTags, session);
     }
 
-    // async getByMatchId (matchId) {
-    //     return this.bowlingFigureRepository.getByMatchId(matchId);
-    // }
-    //
+    async getByMatchId (matchId) {
+        return this.partnershipRepository.getByMatchId(matchId);
+    }
+
     async remove (matchId) {
         await this.partnershipRepository.remove(matchId);
     }
