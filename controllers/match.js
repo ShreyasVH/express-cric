@@ -41,6 +41,7 @@ const TagResponse = require('../responses/tagResponse');
 
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
+const partnershipRepository = require("./match");
 
 const matchService = new MatchService();
 const seriesService = new SeriesService();
@@ -483,6 +484,7 @@ const remove = asyncHandler(async (req, res, next) => {
         await manOfTheMatchService.remove(id);
         await battingScoreService.remove(id);
         await bowlingFigureService.remove(id);
+        await partnershipService.remove(id);
         await matchPlayerMapService.remove(id);
         await totalsService.remove(id);
         await matchService.remove(id);

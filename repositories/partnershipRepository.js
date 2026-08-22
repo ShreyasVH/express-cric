@@ -24,11 +24,11 @@ class PartnershipRepository {
     //     return BowlingFigureModel.find({ matchId: matchId });
     // }
     //
-    // async remove (matchId) {
-    //     await connectDatabase();
-    //
-    //     await BowlingFigureModel.deleteMany({ matchId: matchId });
-    // }
+    async remove (matchId) {
+        await connectDatabase();
+
+        await PartnershipModel.deleteMany({ matchId: matchId });
+    }
     //
     // async merge (mergeRequest) {
     //     await connectDatabase();

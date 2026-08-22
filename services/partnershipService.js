@@ -13,13 +13,9 @@ class PartnershipService {
     //     return this.bowlingFigureRepository.getByMatchId(matchId);
     // }
     //
-    // async remove (matchId) {
-    //     await this.bowlingFigureRepository.remove(matchId);
-    // }
-    //
-    // async merge (mergeRequest) {
-    //     await this.bowlingFigureRepository.merge(mergeRequest);
-    // }
+    async remove (matchId) {
+        await this.partnershipRepository.remove(matchId);
+    }
 }
 
 module.exports = PartnershipService;
