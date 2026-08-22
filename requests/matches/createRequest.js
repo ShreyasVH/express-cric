@@ -23,6 +23,7 @@ class CreateRequest {
         this.wicketKeepers = requestBody.wicketKeepers;
         this.totals = requestBody.totals;
         this.tags = requestBody.tags;
+        this.partnerships = requestBody.partnerships;
     }
 
     validate () {
