@@ -41,7 +41,6 @@ const TagResponse = require('../responses/tagResponse');
 
 const NotFoundException = require('../exceptions/notFoundException');
 const mongoose = require('mongoose');
-const partnershipRepository = require("./match");
 const PartnershipResponse = require("../responses/partnershipResponse");
 
 const matchService = new MatchService();
