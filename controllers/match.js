@@ -272,11 +272,9 @@ const create = asyncHandler(async (req, res, next) => {
 
         return map;
     }, {});
-    console.log(partnershipMap);
 
     const partnershipResponses = createRequest.partnerships.map(partnershipRequest => {
         const key = partnershipRequest.playerId1 + "_" + partnershipRequest.playerId2 + "_" + partnershipRequest.innings + "_" + partnershipRequest.wicket;
-        console.log(key);
         const partnership = partnershipMap[key];
 
         const player1 = playerMap[partnershipRequest.playerId1];
