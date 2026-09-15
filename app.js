@@ -9,7 +9,7 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const MyException = require('./exceptions/myException');
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const allowedOrigins = ['https://cric.react.com', 'https://cric.angular.com', 'https://cric.vue.com', 'https://cric.sveltekit.com', 'https://cric.solid.com'];

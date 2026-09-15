@@ -24,6 +24,7 @@ class CreateRequest {
         this.totals = requestBody.totals;
         this.tags = requestBody.tags;
         this.partnerships = requestBody.partnerships;
+        this.ballwiseDetails = requestBody.ballwiseDetails;
     }
 
     validate () {
