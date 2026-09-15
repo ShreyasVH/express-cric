@@ -22,6 +22,7 @@ const GameTypeService = require('../services/gameTypeService');
 const TotalsService = require('../services/totalsService');
 const TagsService = require('../services/tagsService');
 const PartnershipService = require('../services/partnershipService');
+const BallwiseDetailService = require('../services/ballwiseDetailService');
 
 const TeamResponse = require('../responses/teamResponse');
 const CountryResponse = require('../responses/countryResponse');
@@ -65,6 +66,7 @@ const gameTypeService = new GameTypeService();
 const totalsService = new TotalsService();
 const tagsService = new TagsService();
 const partnershipService = new PartnershipService();
+const ballwiseDetailService = new BallwiseDetailService();
 
 const create = asyncHandler(async (req, res, next) => {
     const createRequest = new CreateRequest(req.body);
@@ -243,6 +245,7 @@ const create = asyncHandler(async (req, res, next) => {
         await wicketKeeperService.add(match.id, createRequest.wicketKeepers, playerTeamMap, teamMap, teamTypeMap, gameTypeResponse, session)
         await totalsService.add(match.id, createRequest.totals, session);
         partnerships = await partnershipService.add(createRequest.partnerships, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, tagResponses, session);
+        await ballwiseDetailService.add(createRequest.ballwiseDetails, playerTeamMap, match, gameType, teamMap, teamTypeMap, playerMap, seriesTags, tagResponses, session);
 
         await session.commitTransaction();
         await session.endSession();
