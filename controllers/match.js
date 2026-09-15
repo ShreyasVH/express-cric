@@ -516,6 +516,7 @@ const remove = asyncHandler(async (req, res, next) => {
         await battingScoreService.remove(id);
         await bowlingFigureService.remove(id);
         await partnershipService.remove(id);
+        await ballwiseDetailService.remove(id);
         await matchPlayerMapService.remove(id);
         await totalsService.remove(id);
         await matchService.remove(id);

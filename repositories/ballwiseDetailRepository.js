@@ -20,12 +20,12 @@ class BallwiseDetailRepository {
     //
     //     return PartnershipModel.find({ matchId: getObjectId(matchId), primaryEntry: true });
     // }
-    //
-    // async remove (matchId) {
-    //     await connectDatabase();
-    //
-    //     await PartnershipModel.deleteMany({ matchId: matchId });
-    // }
+
+    async remove (matchId) {
+        await connectDatabase();
+
+        await BallwiseDetailModel.deleteMany({ matchId: matchId });
+    }
 }
 
 module.exports = BallwiseDetailRepository;

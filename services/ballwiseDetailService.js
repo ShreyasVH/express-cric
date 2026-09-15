@@ -12,10 +12,10 @@ class BallwiseDetailService {
     // async getByMatchId (matchId) {
     //     return this.partnershipRepository.getByMatchId(matchId);
     // }
-    //
-    // async remove (matchId) {
-    //     await this.partnershipRepository.remove(matchId);
-    // }
+
+    async remove (matchId) {
+        await this.ballwiseDetailRepository.remove(matchId);
+    }
 }
 
 module.exports = BallwiseDetailRepository;
